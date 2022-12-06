@@ -8,9 +8,10 @@ type ADOPQuery {
 }
 
 type ADOPSchema {
-  execute: String!
-  instantiate: String!
-  query: String!
+  contract_schema: String
+  execute: String
+  instantiate: String
+  query: String
   receive: ADOPSchemaReceive
 }
 

@@ -14,14 +14,17 @@ export class ADOPSchemaReceive {
 
 @ObjectType()
 export class ADOPSchema {
-  @Field()
-  execute!: string
+  @Field({ nullable: true })
+  execute?: string
 
-  @Field()
-  instantiate!: string
+  @Field({ nullable: true })
+  instantiate?: string
 
-  @Field()
-  query!: string
+  @Field({ nullable: true })
+  query?: string
+
+  @Field({ nullable: true })
+  contract_schema?: string
 
   @Field(() => ADOPSchemaReceive, { nullable: true })
   receive?: ADOPSchemaReceive
