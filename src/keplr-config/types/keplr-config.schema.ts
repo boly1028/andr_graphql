@@ -6,8 +6,8 @@ export type KeplrConfigDocument = KeplrConfig & Document
 @ObjectType()
 export class Bip44 {
   @Prop({ required: true })
-  @Field()
-  coinType!: string
+  @Field(() => Int)
+  coinType!: number
 }
 
 @ObjectType()
