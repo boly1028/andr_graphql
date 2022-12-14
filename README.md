@@ -102,6 +102,6 @@ Running the test coverage.
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## License
+## Licensing
 
-[Terms and Conditions](https://github.com/andromedaprotocol/andromeda-core/blob/Add-Licensing/LICENSE/LICENSE.md)
+[Terms and Conditions](https://github.com/andromedaprotocol/andromeda-core/blob/development/LICENSE/LICENSE.md)
