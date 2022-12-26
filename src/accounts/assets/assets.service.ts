@@ -105,23 +105,31 @@ export class AssetsService {
   }
 
   public async getComponents(address: string, chainId?: string, adoType?: AdoType): Promise<Component[]> {
-    console.log({ chainId: chainId, address: address })
-    const [components, addresses] = await Promise.all([
-      this.components(address, chainId),
-      this.addresses(address, chainId),
-    ])
+    try {
+      const [components, addresses] = await Promise.all([
+        this.components(address, chainId),
+        this.addresses(address, chainId),
+      ])
 
-    const compswithAddr = components.map((item) => {
-      const componentAddress = addresses.find((addr) => addr.name == item.name)
-      if (componentAddress) item.address = componentAddress.address
-      return item
-    })
+      const compswithAddr = components.map((item) => {
+        const componentAddress = addresses.find((addr) => addr.name == item.name)
+        if (componentAddress) item.address = componentAddress.address
+        return item
+      })
 
-    if (adoType) {
-      return compswithAddr.filter((item) => item.ado_type === adoType)
+      if (adoType) {
+        return compswithAddr.filter((item) => item.ado_type === adoType)
+      }
+
+      return compswithAddr
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(MONGO_QUERY_ERROR, address)
     }
-
-    return compswithAddr
   }
 
   // public async getTokens(address: string, adoType: AdoType, attributes?: SearchAttribute[]): Promise<NftInfo[]> {
