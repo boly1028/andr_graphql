@@ -71,7 +71,7 @@ export class AssetsService {
 
   private async addresses(address: string, chainId?: string): Promise<ComponentAddress[]> {
     try {
-      const addresses = await this.wasmService.queryContract(address, ComponentSchema.get_addresses, chainId)
+      const addresses = await this.wasmService.queryContract(address, ComponentSchema.get_addresses_with_names, chainId)
       return addresses as ComponentAddress[]
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -107,8 +107,12 @@ export class AssetsService {
   public async getComponents(address: string, chainId?: string, adoType?: AdoType): Promise<Component[]> {
     try {
       const [components, addresses] = await Promise.all([
-        this.components(address, chainId),
-        this.addresses(address, chainId),
+        this.components(address, chainId).catch(() => {
+          return []
+        }),
+        this.addresses(address, chainId).catch(() => {
+          return []
+        }),
       ])
 
       const compswithAddr = components.map((item) => {

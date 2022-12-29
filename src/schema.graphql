@@ -271,7 +271,7 @@ type BidsResponse {
 }
 
 type Bip44 {
-  coinType: String!
+  coinType: Int!
 }
 
 type CW20Ado {

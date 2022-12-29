@@ -47,7 +47,7 @@ export class AppService extends AdoService {
 
   public async getAddresses(address: string, chainId?: string): Promise<AppComponentAddress[]> {
     try {
-      const addresses = await this.wasmService.queryContract(address, AppSchema.get_addresses, chainId)
+      const addresses = await this.wasmService.queryContract(address, AppSchema.get_addresses_with_names, chainId)
       return addresses as AppComponentAddress[]
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)

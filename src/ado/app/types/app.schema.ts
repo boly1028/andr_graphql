@@ -4,8 +4,8 @@ export const AppSchema = {
   config: {
     config: {},
   },
-  get_addresses: {
-    get_addresses: {},
+  get_addresses_with_names: {
+    get_addresses_with_names: {},
   },
   get_address: {
     get_address: {
