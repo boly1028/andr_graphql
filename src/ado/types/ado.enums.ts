@@ -24,6 +24,7 @@ export enum OrderBy {
 }
 
 export enum AdoType {
+  Ado = 'ado',
   AddressList = 'address-list',
   Auction = 'auction',
   App = 'app',

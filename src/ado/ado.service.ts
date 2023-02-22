@@ -32,7 +32,7 @@ export class AdoService {
   public async getAdo<TAdo>(address: string, ado_type: AdoType): Promise<TAdo> {
     try {
       const response = await this.wasmService.queryContract(address, AndrQuerySchema.type)
-      if (response.ado_type && response.ado_type === ado_type) {
+      if (ado_type === AdoType.Ado || (response.ado_type && response.ado_type === ado_type)) {
         const wasmContract = await this.wasmService.getContract(address)
         return {
           address: address,

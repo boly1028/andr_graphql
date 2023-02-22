@@ -9,9 +9,13 @@ import { PrimitiveAdo } from '../primitive/types'
 import { RatesAdo } from '../rates/types'
 import { SplitterAdo } from '../splitter/types'
 import { VaultAdo } from '../vault/types'
+import { BaseAdo } from './base-ado.query'
 
 @ObjectType()
 export class AdoQuery {
+  @Field(() => BaseAdo)
+  ado!: Promise<BaseAdo>
+
   @Field(() => PrimitiveAdo)
   primitive!: Promise<PrimitiveAdo>
 

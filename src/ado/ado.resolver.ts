@@ -13,6 +13,7 @@ import { RatesAdo } from './rates/types'
 import { SplitterAdo } from './splitter/types'
 import { TimelockAdo } from './timelock/types'
 import { AdoQuery } from './types'
+import { BaseAdo } from './types/base-ado.query'
 import { VaultAdo } from './vault/types'
 
 @Resolver(AdoQuery)
@@ -22,6 +23,11 @@ export class AdoResolver {
   @Query(() => AdoQuery)
   public async ADO(): Promise<AdoQuery> {
     return {} as AdoQuery
+  }
+
+  @ResolveField(() => BaseAdo)
+  public async ado(@Args('address') address: string): Promise<BaseAdo> {
+    return this.adoService.getAdo<BaseAdo>(address, AdoType.Ado)
   }
 
   @ResolveField(() => AddressListAdo)

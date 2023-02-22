@@ -8,5 +8,6 @@ import { ChainConfigSchema } from './types/chain-config.schema'
 @Module({
   imports: [MongooseModule.forFeature([{ name: ChainConfig.name, schema: ChainConfigSchema }])],
   providers: [ChainConfigResolver, ChainConfigService],
+  exports: [ChainConfigService],
 })
 export class ChainConfigModule {}

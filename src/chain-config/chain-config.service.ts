@@ -46,4 +46,26 @@ export class ChainConfigService {
       throw new ApolloError(MONGO_QUERY_ERROR, identifier)
     }
   }
+
+  public async getChainUrl(address: string, chainId?: string): Promise<string | undefined> {
+    let chainConfig: ChainConfig | null | undefined
+    try {
+      if (chainId) {
+        chainConfig = await this.chainConfigModel?.findOne({ chainId: chainId })
+      } else {
+        const chainConfigs = await this.chainConfigModel?.find()
+        if (!chainConfigs || !chainConfigs.length) throw new UserInputError(CHAIN_CONFIGS_NOT_FOUND_ERR)
+
+        chainConfig = chainConfigs.find((c) => address.startsWith(c.addressPrefix))
+      }
+      return chainConfig?.chainUrl
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(MONGO_QUERY_ERROR)
+    }
+  }
 }
