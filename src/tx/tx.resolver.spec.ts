@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { getLoggerToken } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { getCosmToken } from 'src/cosm'
 import { TxResolver } from './tx.resolver'
 import { TxService } from './tx.service'
@@ -20,6 +21,10 @@ describe('TxResolver', () => {
         },
         {
           provide: getCosmToken(),
+          useValue: {},
+        },
+        {
+          provide: ChainConfigService,
           useValue: {},
         },
       ],

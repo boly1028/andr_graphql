@@ -62,6 +62,7 @@ type AdoPackage {
 
 type AdoQuery {
   address_list(address: String!): AddressListAdo!
+  ado(address: String!): BaseAdo!
   app(address: String!): AppAdo!
   auction(address: String!): AuctionAdo!
   crowdfund(address: String!): CrowdfundAdo!
@@ -80,6 +81,7 @@ type AdoQuery {
 
 enum AdoType {
   AddressList
+  Ado
   App
   Auction
   CW20
@@ -249,6 +251,12 @@ type AuctionStateResponse {
   min_bid: Int
   start_time: JSON
   whitelist: JSON
+}
+
+type BaseAdo implements IBaseAdoQuery {
+  address: String!
+  andr: AndrQuery!
+  type: String!
 }
 
 type Bech32Config {

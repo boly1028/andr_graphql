@@ -1,9 +1,9 @@
-import { configs, getConfigByChainID } from '@andromedaprotocol/andromeda.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 //import { decodeTxRaw } from '@cosmjs/proto-signing'
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { InjectCosmClient } from 'src/cosm'
 import { BlockInfo } from './types/block.result'
 import {
@@ -15,7 +15,6 @@ import {
   LOG_ERR_TX_QRY_OWNR_TXT,
   LOG_ERR_TX_QRY_TAG_TXT,
   LOG_ERR_TX_QRY_TXT,
-  NOT_FOUND_ERR,
 } from './types/tx.constants'
 import { TxFilterParams, TxInfo, TxLog, TxSearchByTagArgs } from './types/tx.result'
 
@@ -26,12 +25,13 @@ export class TxService {
     protected readonly logger: PinoLogger,
     @InjectCosmClient()
     protected readonly cosmWasmClient: CosmWasmClient,
+    @Inject(ChainConfigService) protected readonly chainConfigService: ChainConfigService,
   ) {}
 
   public async byHash(chainId: string, hash: string): Promise<TxInfo> {
     try {
-      const chainUrl = this.getChainUrl(chainId)
-      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+      if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const IndexedTx = await queryClient.getTx(hash)
@@ -47,8 +47,8 @@ export class TxService {
 
   public async byHeight(chainId: string, height: number): Promise<TxInfo[]> {
     try {
-      const chainUrl = this.getChainUrl(chainId)
-      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+      if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx({ height: height })
@@ -64,8 +64,8 @@ export class TxService {
 
   public async byContract(chainId: string, contractAddress: string, filterParams?: TxFilterParams): Promise<TxInfo[]> {
     try {
-      const chainUrl = this.getChainUrl(chainId)
-      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+      if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx(
@@ -89,8 +89,8 @@ export class TxService {
 
   public async byAccount(chainId: string, sentFromOrTo: string, filterParams?: TxFilterParams): Promise<TxInfo[]> {
     try {
-      const chainUrl = this.getChainUrl(chainId)
-      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+      if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx({ sentFromOrTo: sentFromOrTo }, filterParams)
@@ -105,7 +105,8 @@ export class TxService {
   }
 
   public async byOwner(chainId: string, walletAddress: string, filterParams?: TxFilterParams): Promise<TxInfo[]> {
-    const chainUrl = this.getChainUrl(chainId)
+    const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+    if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
@@ -129,7 +130,8 @@ export class TxService {
   }
 
   public async byTag(chainId: string, tags: TxSearchByTagArgs, filterParams?: TxFilterParams): Promise<TxInfo[]> {
-    const chainUrl = this.getChainUrl(chainId)
+    const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+    if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
@@ -146,8 +148,8 @@ export class TxService {
 
   public async getBlockInfo(chainId: string, height: number): Promise<BlockInfo> {
     try {
-      const chainUrl = this.getChainUrl(chainId)
-      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+      if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const blockInfo = await queryClient.getBlock(height)
@@ -156,13 +158,6 @@ export class TxService {
       this.logger.error({ err }, LOG_ERR_TX_QRY_HT_TXT, height)
       throw new ApolloError(INTERNAL_TX_QUERY_ERR)
     }
-  }
-
-  private getChainUrl(chainId: string, address?: string): string {
-    const chainConfig = address ? configs.find((c) => address.startsWith(c.addressPrefix)) : getConfigByChainID(chainId)
-
-    if (!chainConfig?.chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
-    return chainConfig?.chainUrl
   }
 
   private parseTx(tx: TxInfo): TxInfo {
