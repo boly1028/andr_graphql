@@ -6,8 +6,8 @@ import { AdoService } from '../ado.service'
 import { INVALID_QUERY_ERR, AndrSearchOptions } from '../types'
 import { NftInfo, NftOwnerInfo } from './types'
 import { AllNftInfo, NftApproval, NftContractInfo, TransferAgreement } from './types'
-import { CW721Ado, SearchAttribute } from './types'
-import { NFT_QUERY_INCLUDE_EXPIRED, CW721Schema, NFT_QUERY_OWNER, NFT_QUERY_TOKEN_ID } from './types'
+import { SearchAttribute } from './types'
+import { NFT_QUERY_INCLUDE_EXPIRED, CW721Schema, NFT_QUERY_OWNER, NFT_QUERY_SPENDER, NFT_QUERY_TOKEN_ID } from './types'
 
 @Injectable()
 export class CW721Service extends AdoService {
@@ -23,7 +23,7 @@ export class CW721Service extends AdoService {
   public async minter(contractAddress: string): Promise<string> {
     try {
       const minterInfo = await this.wasmService.queryContract(contractAddress, CW721Schema.minter)
-      return (minterInfo as CW721Ado).minter ?? ''
+      return (minterInfo as string) ?? ''
     } catch (err: any) {
       this.logger.error({ err }, 'Error getting the wasm contract %s query.', contractAddress)
       if (err instanceof UserInputError || err instanceof ApolloError) {
@@ -37,7 +37,7 @@ export class CW721Service extends AdoService {
   public async ownerOf(contractAddress: string, tokenId: string, includeExpired: boolean): Promise<NftOwnerInfo> {
     const queryMsgStr = JSON.stringify(CW721Schema.owner_of)
       .replace(NFT_QUERY_TOKEN_ID, tokenId)
-      .replace(NFT_QUERY_INCLUDE_EXPIRED, String(includeExpired))
+      .replace('"' + NFT_QUERY_INCLUDE_EXPIRED + '"', String(includeExpired))
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
@@ -61,7 +61,7 @@ export class CW721Service extends AdoService {
   ): Promise<NftApproval[]> {
     const queryMsgStr = JSON.stringify(CW721Schema.all_operators)
       .replace(NFT_QUERY_OWNER, owner)
-      .replace(NFT_QUERY_INCLUDE_EXPIRED, String(includeExpired))
+      .replace('"' + NFT_QUERY_INCLUDE_EXPIRED + '"', String(includeExpired))
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
@@ -85,8 +85,8 @@ export class CW721Service extends AdoService {
   ): Promise<NftApproval> {
     const queryMsgStr = JSON.stringify(CW721Schema.approval)
       .replace(NFT_QUERY_TOKEN_ID, tokenId)
-      .replace(NFT_QUERY_OWNER, spender)
-      .replace(NFT_QUERY_INCLUDE_EXPIRED, String(includeExpired))
+      .replace(NFT_QUERY_SPENDER, spender)
+      .replace('"' + NFT_QUERY_INCLUDE_EXPIRED + '"', String(includeExpired))
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
@@ -105,7 +105,7 @@ export class CW721Service extends AdoService {
   public async approvals(contractAddress: string, tokenId: string, includeExpired: boolean): Promise<NftApproval[]> {
     const queryMsgStr = JSON.stringify(CW721Schema.approvals)
       .replace(NFT_QUERY_TOKEN_ID, tokenId)
-      .replace(NFT_QUERY_INCLUDE_EXPIRED, String(includeExpired))
+      .replace('"' + NFT_QUERY_INCLUDE_EXPIRED + '"', String(includeExpired))
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
@@ -155,7 +155,7 @@ export class CW721Service extends AdoService {
   public async allNftInfo(contractAddress: string, tokenId: string, includeExpired: boolean): Promise<AllNftInfo> {
     const queryMsgStr = JSON.stringify(CW721Schema.all_nft_info)
       .replace(NFT_QUERY_TOKEN_ID, tokenId)
-      .replace(NFT_QUERY_INCLUDE_EXPIRED, String(includeExpired))
+      .replace('"' + NFT_QUERY_INCLUDE_EXPIRED + '"', String(includeExpired))
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
