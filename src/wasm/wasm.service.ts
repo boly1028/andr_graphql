@@ -1,8 +1,8 @@
-import { configs, getConfigByChainID } from '@andromedaprotocol/andromeda.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { InjectCosmClient } from 'src/cosm'
 import {
   INTERNAL_CONTRACT_ERR,
@@ -21,11 +21,12 @@ export class WasmService {
     protected readonly logger: PinoLogger,
     @InjectCosmClient()
     protected readonly cosmWasmClient: CosmWasmClient,
+    @Inject(ChainConfigService) protected readonly chainConfigService: ChainConfigService,
   ) {}
 
   public async getContract(address: string, chainId?: string): Promise<WasmContract> {
     try {
-      const chainUrl = this.getChainUrl(address, chainId)
+      const chainUrl = await this.chainConfigService.getChainUrl(address, chainId)
       if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
@@ -46,7 +47,7 @@ export class WasmService {
 
   public async queryContract(address: string, queryMsg: Record<string, unknown>, chainId?: string): Promise<any> {
     try {
-      const chainUrl = this.getChainUrl(address, chainId)
+      const chainUrl = await this.chainConfigService.getChainUrl(address, chainId)
       if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
@@ -65,7 +66,7 @@ export class WasmService {
     let current: any
 
     try {
-      const chainUrl = this.getChainUrl(address, chainId)
+      const chainUrl = await this.chainConfigService.getChainUrl(address, chainId)
       if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
@@ -79,11 +80,5 @@ export class WasmService {
       queries.shift()
       return queries
     }
-  }
-
-  private getChainUrl(address: string, chainId?: string): string | undefined {
-    const chainConfig = chainId ? getConfigByChainID(chainId) : configs.find((c) => address.startsWith(c.addressPrefix))
-
-    return chainConfig?.chainUrl
   }
 }
