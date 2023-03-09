@@ -64,6 +64,9 @@ export class AuctionStateResponse {
 
   @Field(() => GraphQLJSON, { nullable: true })
   whitelist?: JSON
+
+  @Field(() => Int, { nullable: true })
+  summaryFields?: Promise<SummaryFields>
 }
 
 @ObjectType()
@@ -100,4 +103,16 @@ export class Bid {
 
   @Field(() => GraphQLJSON)
   timestamp!: JSON
+}
+
+@ObjectType()
+export class SummaryFields {
+  @Field(() => Int, { nullable: true })
+  high_bidder_amount?: number
+
+  @Field(() => Int, { nullable: true })
+  min_bid?: number
+
+  @Field({ nullable: true })
+  coin_denom?: string
 }

@@ -143,4 +143,9 @@ export class CW721Resolver {
   public async contractInfo(@Parent() cw721: CW721Ado): Promise<NftContractInfo> {
     return this.cw721Service.contractInfo(cw721.address)
   }
+
+  @ResolveField(() => Int)
+  public async numOwners(@Parent() cw721: CW721Ado, @Args('includeExpired') includeExpired: boolean): Promise<number> {
+    return this.cw721Service.numOwners(cw721.address, includeExpired)
+  }
 }
