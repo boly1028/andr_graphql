@@ -286,4 +286,25 @@ export class CW721Service extends AdoService {
       throw new ApolloError(INVALID_QUERY_ERR)
     }
   }
+
+  public async numOwners(contractAddress: string, includeExpired: boolean): Promise<number> {
+    try {
+      const response = await this.wasmService.queryContract(contractAddress, CW721Schema.all_tokens)
+      const numOwners: string[] = []
+      for (const tokenId of response.tokens) {
+        const ownerInfo: NftOwnerInfo = await this.ownerOf(contractAddress, tokenId, includeExpired)
+        if (ownerInfo.owner && !numOwners.includes(ownerInfo.owner)) {
+          numOwners.push(ownerInfo.owner)
+        }
+      }
+      return numOwners.length
+    } catch (err: any) {
+      this.logger.error({ err }, 'Error getting the wasm contract %s query.', contractAddress)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
 }

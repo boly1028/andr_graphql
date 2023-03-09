@@ -228,6 +228,7 @@ type AuctionAdo {
   operators: [String!]! @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
   owner: String! @deprecated(reason: "Moved to `andr` query resolver, use `owner` field on `andr` to resolve this query.")
   queries_expected: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `queries_expected` field on `andr` to resolve this query.")
+  summaryFields(tokenAddress: String!): SummaryFields
   type: String!
 }
 
@@ -250,6 +251,7 @@ type AuctionStateResponse {
   is_cancelled: Boolean
   min_bid: Int
   start_time: JSON
+  summaryFields: Int
   whitelist: JSON
 }
 
@@ -307,6 +309,7 @@ type CW721Ado {
   label: String @deprecated(reason: "Moved to `andr` query resolver, use `label` field on `andr` to resolve this query.")
   minter: String
   nftInfo(tokenId: String!): NftInfo
+  numOwners(includeExpired: Boolean!): Int
   numTokens: Int
   operators: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
   owner: String @deprecated(reason: "Moved to `andr` query resolver, use `owner` field on `andr` to resolve this query.")
@@ -542,6 +545,12 @@ type SplitterAdo {
   andr: AndrQuery!
   config: Splitter
   type: String!
+}
+
+type SummaryFields {
+  coin_denom: String
+  high_bidder_amount: Int
+  min_bid: Int
 }
 
 type TimelockAdo implements IBaseAdoQuery {

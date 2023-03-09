@@ -54,6 +54,9 @@ export class CW721Ado extends BaseAdoContract implements IBaseAdoQuery {
 
   @Field(() => NftContractInfo, { nullable: true })
   contractInfo?: Promise<NftContractInfo>
+
+  @Field(() => Int, { nullable: true })
+  numOwners?: Promise<number>
 }
 
 @ObjectType()

@@ -7,6 +7,7 @@ import {
   AuctionInfosForAddressResponse,
   AuctionStateResponse,
   BidsResponse,
+  SummaryFields,
 } from './types'
 
 @Resolver(AuctionAdo)
@@ -89,5 +90,13 @@ export class AuctionResolver {
     @Args('tokenAddress') tokenAddress: string,
   ): Promise<AuctionInfosForAddressResponse> {
     return this.auctionService.getAuctionInfosForAddress(auction.address, tokenAddress)
+  }
+
+  @ResolveField(() => SummaryFields, { nullable: true })
+  public async summaryFields(
+    @Parent() auction: AuctionAdo,
+    @Args('tokenAddress') tokenAddress: string,
+  ): Promise<SummaryFields> {
+    return this.auctionService.getSummaryFields(auction.address, tokenAddress)
   }
 }

@@ -17,7 +17,7 @@ export class AndrHttpApiStack extends cdk.Stack {
 
     const env_name = this.node.tryGetContext('env_name');
     const ENV = String(env_name).toUpperCase();
-    const envConfig = this.node.tryGetContext(ENV);
+    this.node.tryGetContext(ENV);
 
     //Security Group
     const bastionSecGrp = new ec2.SecurityGroup(this, `bastionSecGrp${ENV}`, {

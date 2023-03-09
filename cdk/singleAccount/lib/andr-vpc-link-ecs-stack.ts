@@ -204,7 +204,7 @@ export class AndrVpclinkEcsStack extends cdk.Stack {
     });
 
     // Target Groups
-    const andrApiServiceTargetGroup = this.httpApiListener.addTargets(
+    this.httpApiListener.addTargets(
       "andrApiServiceTargetGroup",
       {
         port: 80,
