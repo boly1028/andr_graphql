@@ -2,7 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as elbv2 from "@aws-cdk/aws-elasticloadbalancingv2";
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as apig from "@aws-cdk/aws-apigatewayv2";
-import { CorsHttpMethod } from "@aws-cdk/aws-apigatewayv2";
+// import { CorsHttpMethod } from "@aws-cdk/aws-apigatewayv2";
 
 export class AndrHttpApiStack extends cdk.Stack {
   constructor(
