@@ -1,0 +1,48 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "context": {
+    "@aws-cdk/core:enableStackNameDuplicates": "true",
+    "aws-cdk:enableDiffNoFail": "true",
+    "@aws-cdk/core:stackRelativeExports": "true",
+    "@aws-cdk/aws-ecr-assets:dockerIgnoreSupport": true,
+    "@aws-cdk/aws-secretsmanager:parseOwnedSecretName": true,
+    "@aws-cdk/aws-kms:defaultKeyPolicies": true,
+    "AWS_ECR_REPO_NAME": "andr-graphql-test",
+    "env_name": "test",
+    "image_tag": "latest",
+    "TEST": {
+      "NODE_ENV": "dev",
+      "PORT":"8085",
+      "HOST":"0.0.0.0",
+      "LOG_NAME": "andromeda-graph",
+      "LOG_LEVEL": "debug",
+      "THROTTLE_TTL": "60",
+      "THROTTLE_LIMIT": "20",
+      "GRAPHQL_DEBUG": "true",
+      "GRAPHQL_PLAYGROUND": "true",
+      "GRAPHQL_SORT_SCHEMA": "true",
+      "GRAPHQL_INTROSPECTION": "true",
+      "MONGODB_URI": "mongodb+srv://graphql:t7k2GW28DhRjjJSO@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?w=majority",
+      "RPC_URL": "https://rpc.uni.juno.deuslabs.fi:443",
+      "CHAIN_ID": "uni-5",
+      "CACHE_ENABLE": "false"
+    },
+    "MAIN": {
+      "NODE_ENV": "production",
+      "PORT":"8085",
+      "HOST":"0.0.0.0",
+      "LOG_NAME": "andromeda-graph",
+      "LOG_LEVEL": "error",
+      "THROTTLE_TTL": "60",
+      "THROTTLE_LIMIT": "20",
+      "GRAPHQL_DEBUG": "true",
+      "GRAPHQL_PLAYGROUND": "true",
+      "GRAPHQL_SORT_SCHEMA": "true",
+      "GRAPHQL_INTROSPECTION": "true",
+      "MONGODB_URI": "mongodb+srv://graphql:t7k2GW28DhRjjJSO@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?w=majority",
+      "RPC_URL": "https://rpc.uni.juno.deuslabs.fi:443",
+      "CHAIN_ID": "uni-5",
+      "CACHE_ENABLE": "false"
+    }
+  }
+}
