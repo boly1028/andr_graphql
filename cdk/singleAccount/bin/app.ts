@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { AndrHttpApiStack } from '../lib/andr-httpApi-stack';
 import { AndrVpclinkEcsStack } from '../lib/andr-vpc-link-ecs-stack';
+import { AndrIndexerEcsStack } from '../lib/andr-indexer-ecs-stack';
 import { AndrVpcStack } from '../lib/andr-vpc-stack';
 
 const envUSA = { region: 'us-east-1' };
@@ -14,3 +15,4 @@ const ENV = String(env_name).toUpperCase();
 const rtbVpcStack = new AndrVpcStack(app, "AndrVpcStack", { env: envUSA });
 const rtbVpclinkEcsStack = new AndrVpclinkEcsStack(app, `AndrFargateVpclinkStack${ENV}`, rtbVpcStack.producerVPC, { env: envUSA });
 new AndrHttpApiStack(app, `AndrHttpApiStack${ENV}`, rtbVpcStack.consumerVPC, rtbVpclinkEcsStack.httpVpcLink, rtbVpclinkEcsStack.httpApiListener , { env: envUSA });
+new AndrIndexerEcsStack(app, `AndrFargateIndexerStack${ENV}`, rtbVpcStack.producerVPC, { env: envUSA });
