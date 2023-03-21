@@ -60,6 +60,10 @@ export class ChainConfig {
   @Prop({ required: true })
   @Field(() => IconUrl)
   iconUrls!: IconUrl
+
+  @Prop({ required: true })
+  @Field({ nullable: true })
+  kernelAddress!: string
 }
 
 export const ChainConfigSchema = SchemaFactory.createForClass(ChainConfig)
