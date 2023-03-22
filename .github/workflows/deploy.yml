@@ -43,8 +43,8 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition AndrFargateVpclinkStackTESTandrApiServiceTaskDef6529FB5F --query taskDefinition > task-definition.json
+      run: | 
+        aws ecs describe-task-definition --task-definition AndrFargateVpclinkStackTESTandrApiServiceTaskDef6529FB5F --query taskDefinition > task-definition.json
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -58,22 +58,21 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: andrApiContainerTEST
-          image: ${{ steps.build-image.outputs.image }}
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: andrApiContainerTEST
+        image: ${{ steps.build-image.outputs.image }}
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        env:
-          ECS_SERVICE: AndrFargateVpclinkStackTEST-andrApiServiceTESTServiceF471332A-Offv8LLUJjlX
-          ECS_CLUSTER: AndrFargateVpclinkStackTEST-andrClusterTEST610680A5-fY0UeI15c6G1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: $ECS_SERVICE
-          cluster: $ECS_CLUSTER
-          wait-for-service-stability: true
-
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      env:
+        ECS_SERVICE: AndrFargateVpclinkStackTEST-andrApiServiceTESTServiceF471332A-Offv8LLUJjlX
+        ECS_CLUSTER: AndrFargateVpclinkStackTEST-andrClusterTEST610680A5-fY0UeI15c6G1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: $ECS_SERVICE
+        cluster: $ECS_CLUSTER
+        wait-for-service-stability: true
