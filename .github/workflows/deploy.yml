@@ -68,11 +68,8 @@ jobs:
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      env:
-        ECS_SERVICE: AndrFargateVpclinkStackTEST-andrApiServiceTESTServiceF471332A-Offv8LLUJjlX
-        ECS_CLUSTER: AndrFargateVpclinkStackTEST-andrClusterTEST610680A5-fY0UeI15c6G1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: $ECS_SERVICE
-        cluster: $ECS_CLUSTER
+        service: AndrFargateVpclinkStackTEST-andrApiServiceTESTServiceF471332A-Offv8LLUJjlX
+        cluster: AndrFargateVpclinkStackTEST-andrClusterTEST610680A5-fY0UeI15c6G1
         wait-for-service-stability: true
