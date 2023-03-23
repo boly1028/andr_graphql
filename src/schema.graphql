@@ -70,7 +70,7 @@ type AdoQuery {
   cw20_staking: String!
   cw721(address: String!): CW721Ado!
   factory(address: String!): FactoryAdo!
-  marketplace: String!
+  marketplace(address: String!): MarketplaceAdo!
   primitive(address: String!): PrimitiveAdo!
   rates(address: String!): RatesAdo!
   receipt: String!
@@ -149,7 +149,7 @@ type AndrQuery implements IWasmContract {
 input AndrSearchOptions {
   limit: Int = 10
   orderBy: AndrOrderBy = Asc
-  startAfter: Int = 0
+  startAfter: String = ""
 }
 
 type AndrStrategy {
@@ -455,6 +455,16 @@ type KeplrConfigQuery {
   config(identifier: String!): KeplrConfig!
 }
 
+type MarketplaceAdo {
+  address: String!
+  andr: AndrQuery!
+  latestSaleState(tokenAddress: String!, tokenId: String!): SaleStateResponse
+  saleIds(tokenAddress: String!, tokenId: String!): SaleIds
+  saleInfosForAddress(options: AndrSearchOptions, tokenAddress: String!): [SaleInfo!]
+  saleState(saleId: String!): SaleStateResponse
+  type: String!
+}
+
 type MetadataAttribute {
   display_type: String
   trait_type: String!
@@ -529,6 +539,23 @@ type RatesAdo {
   andr: AndrQuery!
   payments: [RateInfo!]
   type: String!
+}
+
+type SaleIds {
+  sale_ids: [String!]
+}
+
+type SaleInfo {
+  sale_ids: [String!]
+  token_address: String
+  token_id: String
+}
+
+type SaleStateResponse {
+  coin_denom: String
+  price: String
+  sale_id: String
+  status: String
 }
 
 input SearchAttribute {

@@ -8,6 +8,7 @@ import { CrowdfundAdo } from './crowdfund/types'
 import { CW20Ado } from './cw20/types'
 import { CW721Ado } from './cw721/types'
 import { FactoryAdo } from './factory/types'
+import { MarketplaceAdo } from './marketplace/types'
 import { PrimitiveAdo } from './primitive/types'
 import { RatesAdo } from './rates/types'
 import { SplitterAdo } from './splitter/types'
@@ -63,6 +64,11 @@ export class AdoResolver {
   @ResolveField(() => FactoryAdo)
   public async factory(@Args('address') address: string): Promise<FactoryAdo> {
     return this.adoService.getAdo<FactoryAdo>(address, AdoType.Factory)
+  }
+
+  @ResolveField(() => MarketplaceAdo)
+  public async marketplace(@Args('address') address: string): Promise<MarketplaceAdo> {
+    return this.adoService.getAdo<MarketplaceAdo>(address, AdoType.Marketplace)
   }
 
   @ResolveField(() => PrimitiveAdo)
