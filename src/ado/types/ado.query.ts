@@ -5,6 +5,7 @@ import { AuctionAdo } from '../auction/types'
 import { CrowdfundAdo } from '../crowdfund/types'
 import { CW20Ado } from '../cw20/types'
 import { CW721Ado } from '../cw721/types'
+import { MarketplaceAdo } from '../marketplace/types'
 import { PrimitiveAdo } from '../primitive/types'
 import { RatesAdo } from '../rates/types'
 import { SplitterAdo } from '../splitter/types'
@@ -46,8 +47,8 @@ export class AdoQuery {
   @Field(() => AuctionAdo)
   auction!: Promise<AuctionAdo>
 
-  @Field()
-  marketplace!: string
+  @Field(() => MarketplaceAdo)
+  marketplace!: Promise<MarketplaceAdo>
 
   @Field(() => CrowdfundAdo)
   crowdfund!: Promise<CrowdfundAdo>

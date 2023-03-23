@@ -19,6 +19,7 @@ import { CrowdfundModule } from './ado/crowdfund/crowdfund.module'
 import { CW20Module } from './ado/cw20/cw20.module'
 import { CW721Module } from './ado/cw721/cw721.module'
 import { FactoryModule } from './ado/factory/factory.module'
+import { MarketplaceModule } from './ado/marketplace/marketplace.module'
 import { PrimitiveModule } from './ado/primitive/primitive.module'
 import { RatesModule } from './ado/rates/rates.module'
 import { SplitterModule } from './ado/splitter/splitter.module'
@@ -118,6 +119,7 @@ import { WasmModule } from './wasm/wasm.module'
     SplitterModule,
     TimelockModule,
     VaultModule,
+    MarketplaceModule,
     TxModule,
     WasmModule,
     AssetsModule,
