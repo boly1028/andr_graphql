@@ -30,6 +30,7 @@ export enum AdoType {
   App = 'app',
   Crowdfund = 'crowdfund',
   CW20Staking = 'cw20-staking',
+  CW20Exchange = 'cw20-exchange',
   CW20 = 'cw20',
   CW721 = 'cw721',
   CW721Bids = 'cw721-bids',

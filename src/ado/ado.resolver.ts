@@ -6,6 +6,8 @@ import { AppAdo } from './app/types'
 import { AuctionAdo } from './auction/types'
 import { CrowdfundAdo } from './crowdfund/types'
 import { CW20Ado } from './cw20/types'
+import { CW20ExchangeAdo } from './cw20exchange/types'
+import { CW20StakingAdo } from './cw20staking/types'
 import { CW721Ado } from './cw721/types'
 import { FactoryAdo } from './factory/types'
 import { MarketplaceAdo } from './marketplace/types'
@@ -54,6 +56,16 @@ export class AdoResolver {
   @ResolveField(() => CW20Ado)
   public async cw20(@Args('address') address: string): Promise<CW20Ado> {
     return this.adoService.getAdo<CW20Ado>(address, AdoType.CW20)
+  }
+
+  @ResolveField(() => CW20StakingAdo)
+  public async cw20_staking(@Args('address') address: string): Promise<CW20StakingAdo> {
+    return this.adoService.getAdo<CW20StakingAdo>(address, AdoType.CW20Staking)
+  }
+
+  @ResolveField(() => CW20ExchangeAdo)
+  public async cw20_exchange(@Args('address') address: string): Promise<CW20ExchangeAdo> {
+    return this.adoService.getAdo<CW20ExchangeAdo>(address, AdoType.CW20Exchange)
   }
 
   @ResolveField(() => CW721Ado)

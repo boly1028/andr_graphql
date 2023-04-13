@@ -67,7 +67,8 @@ type AdoQuery {
   auction(address: String!): AuctionAdo!
   crowdfund(address: String!): CrowdfundAdo!
   cw20(address: String!): CW20Ado!
-  cw20_staking: String!
+  cw20_exchange(address: String!): CW20ExchangeAdo!
+  cw20_staking(address: String!): CW20StakingAdo!
   cw721(address: String!): CW721Ado!
   factory(address: String!): FactoryAdo!
   marketplace(address: String!): MarketplaceAdo!
@@ -85,6 +86,7 @@ enum AdoType {
   App
   Auction
   CW20
+  CW20Exchange
   CW20Staking
   CW721
   CW721Bids
@@ -122,6 +124,17 @@ type AgreementAmount {
 type AllNftInfo {
   access: NftOwnerInfo
   info: NftInfo
+}
+
+type Allowance {
+  allowance: Float
+  expires: JSON
+  owner: String
+  spender: String
+}
+
+type AndrAddress {
+  identifier: String!
 }
 
 enum AndrOrderBy {
@@ -286,8 +299,36 @@ type Bip44 {
 
 type CW20Ado {
   address: String!
+  allAccounts(options: AndrSearchOptions): [String!]
+  allAllowances(options: AndrSearchOptions, owner: String!): [Allowance!]
+  allSpenderAllowances(options: AndrSearchOptions, spender: String!): [Allowance!]
+  allowance(owner: String!, spender: String!): Allowance
   andr: AndrQuery!
+  balance(address: String!): Float
+  downloadLogo: DownloadLogo
+  marketingInfo: MarketingInfo
+  minter: Minter
   tokenInfo: TokenInfo
+  type: String!
+}
+
+type CW20ExchangeAdo {
+  address: String!
+  andr: AndrQuery!
+  sale(cw20: String, native: String): SaleResponse
+  saleAssets(options: AndrSearchOptions): String!
+  tokenAddress: String
+  type: String!
+}
+
+type CW20StakingAdo {
+  address: String!
+  andr: AndrQuery!
+  config: ConfigStructure
+  staker(address: String!): StakerResponse
+  stakers(options: AndrSearchOptions): [StakerResponse!]
+  state: StateStructure
+  timestamp: JSON!
   type: String!
 }
 
@@ -353,6 +394,11 @@ type Component {
   name: String!
 }
 
+type ConfigStructure {
+  number_of_reward_tokens: Int
+  staking_token: AndrAddress
+}
+
 type CrowdfundAdo {
   address: String!
   andr: AndrQuery!
@@ -384,6 +430,11 @@ type Currency {
   coinDenom: String!
   coinGeckoId: String!
   coinMinimalDenom: String!
+}
+
+type DownloadLogo {
+  data: JSON
+  mime_type: String
 }
 
 type Escrow {
@@ -455,6 +506,14 @@ type KeplrConfigQuery {
   config(identifier: String!): KeplrConfig!
 }
 
+type MarketingInfo {
+  allowance: Float
+  description: String
+  logo: JSON
+  marketing: String
+  project: String
+}
+
 type MarketplaceAdo {
   address: String!
   andr: AndrQuery!
@@ -469,6 +528,11 @@ type MetadataAttribute {
   display_type: String
   trait_type: String!
   value: String!
+}
+
+type Minter {
+  cap: Float
+  minter: String!
 }
 
 type NftApproval {
@@ -551,6 +615,12 @@ type SaleInfo {
   token_id: String
 }
 
+type SaleResponse {
+  amount: Float
+  exchange_rate: Float
+  recipient: String
+}
+
 type SaleStateResponse {
   coin_denom: String
   price: String
@@ -573,6 +643,16 @@ type SplitterAdo {
   andr: AndrQuery!
   config: Splitter
   type: String!
+}
+
+type StakerResponse {
+  address: String!
+  pending_rewards: [[String!]!]
+  share: Float
+}
+
+type StateStructure {
+  total_share: Float
 }
 
 type SummaryFields {
