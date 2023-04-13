@@ -17,6 +17,8 @@ import { AppAdoModule } from './ado/app/app-ado.module'
 import { AuctionModule } from './ado/auction/auction.module'
 import { CrowdfundModule } from './ado/crowdfund/crowdfund.module'
 import { CW20Module } from './ado/cw20/cw20.module'
+import { CW20ExchangeModule } from './ado/cw20exchange/cw20exchange.module'
+import { CW20StakingModule } from './ado/cw20staking/cw20staking.module'
 import { CW721Module } from './ado/cw721/cw721.module'
 import { FactoryModule } from './ado/factory/factory.module'
 import { MarketplaceModule } from './ado/marketplace/marketplace.module'
@@ -111,6 +113,8 @@ import { WasmModule } from './wasm/wasm.module'
     AuctionModule,
     CrowdfundModule,
     CW20Module,
+    CW20StakingModule,
+    CW20ExchangeModule,
     FactoryModule,
     CW721Module,
     KeplrConfigModule,

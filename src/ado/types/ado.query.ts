@@ -4,6 +4,8 @@ import { AppAdo } from '../app/types'
 import { AuctionAdo } from '../auction/types'
 import { CrowdfundAdo } from '../crowdfund/types'
 import { CW20Ado } from '../cw20/types'
+import { CW20ExchangeAdo } from '../cw20exchange/types'
+import { CW20StakingAdo } from '../cw20staking/types'
 import { CW721Ado } from '../cw721/types'
 import { MarketplaceAdo } from '../marketplace/types'
 import { PrimitiveAdo } from '../primitive/types'
@@ -41,8 +43,11 @@ export class AdoQuery {
   @Field(() => CW20Ado)
   cw20!: Promise<CW20Ado>
 
-  @Field()
-  cw20_staking!: string
+  @Field(() => CW20StakingAdo)
+  cw20_staking!: Promise<CW20StakingAdo>
+
+  @Field(() => CW20ExchangeAdo)
+  cw20_exchange!: Promise<CW20ExchangeAdo>
 
   @Field(() => AuctionAdo)
   auction!: Promise<AuctionAdo>
