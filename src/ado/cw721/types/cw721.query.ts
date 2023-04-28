@@ -146,8 +146,8 @@ export class AttributeSearchOptions {
 
 @ObjectType()
 export class NftInfo {
-  @Field({ nullable: true })
-  tokenUri?: string
+  @Field(() => String, { nullable: true })
+  token_uri?: string
 
   @Field(() => TokenExtension, { nullable: true })
   extension?: TokenExtension
