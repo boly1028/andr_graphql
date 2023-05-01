@@ -21,13 +21,18 @@ import { CW20ExchangeModule } from './ado/cw20exchange/cw20exchange.module'
 import { CW20StakingModule } from './ado/cw20staking/cw20staking.module'
 import { CW721Module } from './ado/cw721/cw721.module'
 import { FactoryModule } from './ado/factory/factory.module'
+import { LockdropModule } from './ado/lockdrop/lockdrop.module'
 import { MarketplaceModule } from './ado/marketplace/marketplace.module'
+import { MerkleAirdropModule } from './ado/merkle-airdrop/merkle-airdrop.module'
 import { PrimitiveModule } from './ado/primitive/primitive.module'
+import { RateLimitingWithdrawalsAdo } from './ado/rate-limiting-withdrawals/types'
 import { RatesModule } from './ado/rates/rates.module'
 import { SplitterModule } from './ado/splitter/splitter.module'
 import { TimelockModule } from './ado/timelock/timelock.module'
 import { registerEnums } from './ado/types/ado.enums'
 import { VaultModule } from './ado/vault/vault.module'
+import { VestingModule } from './ado/vesting/vesting.module'
+import { WeightedDistributionSplitterModule } from './ado/weighted-distribution-splitter/weighted-distribution-splitter.module'
 import { ChainConfigModule } from './chain-config/chain-config.module'
 import { CosmModule } from './cosm'
 import { validate } from './env.validation'
@@ -111,6 +116,7 @@ import { WasmModule } from './wasm/wasm.module'
     AddresslistModule,
     AppAdoModule,
     AuctionModule,
+    LockdropModule,
     CrowdfundModule,
     CW20Module,
     CW20StakingModule,
@@ -119,11 +125,15 @@ import { WasmModule } from './wasm/wasm.module'
     CW721Module,
     KeplrConfigModule,
     PrimitiveModule,
+    RateLimitingWithdrawalsAdo,
     RatesModule,
     SplitterModule,
     TimelockModule,
+    WeightedDistributionSplitterModule,
     VaultModule,
+    VestingModule,
     MarketplaceModule,
+    MerkleAirdropModule,
     TxModule,
     WasmModule,
     AssetsModule,

@@ -10,14 +10,19 @@ import { CW20ExchangeAdo } from './cw20exchange/types'
 import { CW20StakingAdo } from './cw20staking/types'
 import { CW721Ado } from './cw721/types'
 import { FactoryAdo } from './factory/types'
+import { LockdropAdo } from './lockdrop/types'
 import { MarketplaceAdo } from './marketplace/types'
+import { MerkleAirdropAdo } from './merkle-airdrop/types'
 import { PrimitiveAdo } from './primitive/types'
+import { RateLimitingWithdrawalsAdo } from './rate-limiting-withdrawals/types'
 import { RatesAdo } from './rates/types'
 import { SplitterAdo } from './splitter/types'
 import { TimelockAdo } from './timelock/types'
 import { AdoQuery } from './types'
 import { BaseAdo } from './types/base-ado.query'
 import { VaultAdo } from './vault/types'
+import { VestingAdo } from './vesting/types'
+import { WeightedDistributionSplitterAdo } from './weighted-distribution-splitter/types'
 
 @Resolver(AdoQuery)
 export class AdoResolver {
@@ -46,6 +51,11 @@ export class AdoResolver {
   @ResolveField(() => AuctionAdo)
   public async auction(@Args('address') address: string): Promise<AuctionAdo> {
     return this.adoService.getAdo<AuctionAdo>(address, AdoType.Auction)
+  }
+
+  @ResolveField(() => LockdropAdo)
+  public async lockdrop(@Args('address') address: string): Promise<LockdropAdo> {
+    return this.adoService.getAdo<LockdropAdo>(address, AdoType.Lockdrop)
   }
 
   @ResolveField(() => CrowdfundAdo)
@@ -83,9 +93,19 @@ export class AdoResolver {
     return this.adoService.getAdo<MarketplaceAdo>(address, AdoType.Marketplace)
   }
 
+  @ResolveField(() => MerkleAirdropAdo)
+  public async merkle_airdrop(@Args('address') address: string): Promise<MerkleAirdropAdo> {
+    return this.adoService.getAdo<MerkleAirdropAdo>(address, AdoType.MerkleAirdrop)
+  }
+
   @ResolveField(() => PrimitiveAdo)
   public async primitive(@Args('address') address: string): Promise<PrimitiveAdo> {
     return this.adoService.getAdo<PrimitiveAdo>(address, AdoType.Primitive)
+  }
+
+  @ResolveField(() => RateLimitingWithdrawalsAdo)
+  public async rate_limiting_withdrawals(@Args('address') address: string): Promise<RateLimitingWithdrawalsAdo> {
+    return this.adoService.getAdo<RateLimitingWithdrawalsAdo>(address, AdoType.RateLimitingWithdrawals)
   }
 
   @ResolveField(() => RatesAdo)
@@ -106,5 +126,17 @@ export class AdoResolver {
   @ResolveField(() => VaultAdo)
   public async vault(@Args('address') address: string): Promise<VaultAdo> {
     return this.adoService.getAdo<VaultAdo>(address, AdoType.Vault)
+  }
+
+  @ResolveField(() => VestingAdo)
+  public async vesting(@Args('address') address: string): Promise<VestingAdo> {
+    return this.adoService.getAdo<VestingAdo>(address, AdoType.Vesting)
+  }
+
+  @ResolveField(() => WeightedDistributionSplitterAdo)
+  public async weighted_distribution_splitter(
+    @Args('address') address: string,
+  ): Promise<WeightedDistributionSplitterAdo> {
+    return this.adoService.getAdo<WeightedDistributionSplitterAdo>(address, AdoType.WeightedDistributionSplitter)
   }
 }

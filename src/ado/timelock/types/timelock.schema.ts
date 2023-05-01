@@ -7,4 +7,9 @@ export const TimelockSchema = {
       recipient: TIMELOCK_QUERY_RECIPIENT,
     },
   },
+  locked_funds_for_recipient: {
+    get_locked_funds_for_recipient: {
+      recipient: TIMELOCK_QUERY_RECIPIENT,
+    },
+  },
 }
