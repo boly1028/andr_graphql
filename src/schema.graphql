@@ -25,8 +25,13 @@ type ADORate {
   key: String
 }
 
+type AccountDetails {
+  balance: String
+  latest_withdrawal: String
+}
+
 type AccountsQuery {
-  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, walletAddress: String!): [AssetResult!]!
+  assets(adoType: AdoType, limit: Int = 10, minter: String, offset: Int = 0, walletAddress: String): [AssetResult!]!
   wallets: String!
 }
 
@@ -71,13 +76,18 @@ type AdoQuery {
   cw20_staking(address: String!): CW20StakingAdo!
   cw721(address: String!): CW721Ado!
   factory(address: String!): FactoryAdo!
+  lockdrop(address: String!): LockdropAdo!
   marketplace(address: String!): MarketplaceAdo!
+  merkle_airdrop(address: String!): MerkleAirdropAdo!
   primitive(address: String!): PrimitiveAdo!
+  rate_limiting_withdrawals(address: String!): RateLimitingWithdrawalsAdo!
   rates(address: String!): RatesAdo!
   receipt: String!
   splitter(address: String!): SplitterAdo!
   timelock(address: String!): TimelockAdo!
   vault(address: String!): VaultAdo!
+  vesting(address: String!): VestingAdo!
+  weighted_distribution_splitter(address: String!): WeightedDistributionSplitterAdo!
 }
 
 enum AdoType {
@@ -387,6 +397,12 @@ type Coin {
   denom: String!
 }
 
+type CoinAllowance {
+  coin: String
+  limit: String
+  minimal_withdrawal_frequency: String
+}
+
 type Component {
   address: String
   ado_type: String!
@@ -506,6 +522,37 @@ type KeplrConfigQuery {
   config(identifier: String!): KeplrConfig!
 }
 
+type LockdropAdo {
+  address: String!
+  andr: AndrQuery!
+  config: LockdropConfig
+  state: LockdropState
+  type: String!
+  userInfo(user: String!): [LockdropUserInfo!]
+  withdrawalPercentAllowed(timestamp: Float!): Float
+}
+
+type LockdropConfig {
+  deposit_window: Int
+  incentive_token: String
+  init_timestamp: Int
+  lockdrop_incentives: Int
+  native_denom: String
+  withdrawal_window: Int
+}
+
+type LockdropState {
+  are_claims_allowed: Boolean
+  total_native_locked: String
+}
+
+type LockdropUserInfo {
+  is_lockdrop_claimed: Boolean
+  total_incentives: String
+  total_native_locked: String
+  withrawal_flag: Boolean
+}
+
 type MarketingInfo {
   allowance: Float
   description: String
@@ -522,6 +569,28 @@ type MarketplaceAdo {
   saleInfosForAddress(options: AndrSearchOptions, tokenAddress: String!): [SaleInfo!]
   saleState(saleId: String!): SaleStateResponse
   type: String!
+}
+
+type MerkleAirdropAdo {
+  address: String!
+  andr: AndrQuery!
+  config: MerkleAirdropConfig
+  isClaimed(address: String!, stage: Float!): Boolean
+  latestStage: Int
+  merkleRoot(stage: Float!): MerkleRootResponse
+  totalClaimed(stage: Float!): String
+  type: String!
+}
+
+type MerkleAirdropConfig {
+  asset_info: JSON
+}
+
+type MerkleRootResponse {
+  expiration: JSON
+  merkle_root: String
+  stage: Int
+  total_amount: String
 }
 
 type MetadataAttribute {
@@ -547,7 +616,7 @@ type NftContractInfo {
 
 type NftInfo {
   extension: TokenExtension
-  tokenUri: String
+  token_uri: String
 }
 
 type NftOwnerInfo {
@@ -576,7 +645,7 @@ type Query {
   ADOP: ADOPQuery!
   accounts: AccountsQuery!
   app(address: String!): AppAdo! @deprecated(reason: "Moved to `ADO` query resolver, use `app` field on `ADO` to resolve this query.")
-  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, walletAddress: String!): [AssetResult!]! @deprecated(reason: "Moved to `Accounts` query resolver, use `assets` field on `Accounts` to resolve this query.")
+  assets(adoType: AdoType, limit: Int = 10, minter: String!, offset: Int = 0, walletAddress: String!): [AssetResult!]! @deprecated(reason: "Moved to `Accounts` query resolver, use `assets` field on `Accounts` to resolve this query.")
   auction(address: String!): AuctionAdo! @deprecated(reason: "Moved to `ADO` query resolver, use `auction` field on `ADO` to resolve this query.")
   chainConfigs: ChainConfigQuery!
   cw721(address: String!): CW721Ado! @deprecated(reason: "Moved to `ADO` query resolver, use `cw721` field on `ADO` to resolve this query.")
@@ -596,6 +665,14 @@ type RateInfo {
   is_additive: Boolean
   rate: Rate
   receivers: [JSON!]
+}
+
+type RateLimitingWithdrawalsAdo {
+  accountDetails: AccountDetails
+  address: String!
+  andr: AndrQuery!
+  coinAllowanceDetails: CoinAllowance
+  type: String!
 }
 
 type RatesAdo {
@@ -634,7 +711,7 @@ input SearchAttribute {
 }
 
 type Splitter {
-  locked: Boolean
+  lock: JSON
   recipients: [AddressPercent!]
 }
 
@@ -661,7 +738,7 @@ type SummaryFields {
   min_bid: Int
 }
 
-type TimelockAdo implements IBaseAdoQuery {
+type TimelockAdo {
   address: String!
   andr: AndrQuery!
   getLockedFunds(owner: String!, recipient: String!): Escrow
@@ -729,12 +806,45 @@ type TxSearchResult {
   chainId: String!
 }
 
+type UserWeightResponse {
+  total_weight: Float
+  weight: Float
+}
+
 type VaultAdo {
   address: String!
   andr: AndrQuery!
   balance(address: String!): [Coin!]
   strategyAddress(strategy: String!): AndrStrategy
   type: String!
+}
+
+type VestingAdo {
+  address: String!
+  andr: AndrQuery!
+  batch(id: Float!): VestingBatchInfo
+  batches: [VestingBatchInfo!]
+  config: VestingConfig
+  type: String!
+}
+
+type VestingBatchInfo {
+  amount: String
+  amount_available_to_claim: String
+  amount_claimed: String
+  id: Int
+  last_claimed_release_time: Int
+  lockup_end: Int
+  number_of_available_claims: String
+  release_amount: JSON
+  release_unit: Int
+}
+
+type VestingConfig {
+  denom: String
+  is_multi_batch_enabled: Boolean
+  recipient: JSON
+  unbonding_duration: JSON
 }
 
 type WasmContract implements IWasmContract {
@@ -746,4 +856,12 @@ type WasmContract implements IWasmContract {
   label: String!
   queries_expected: [String!]
   queryMsg(message: JSON!): JSON
+}
+
+type WeightedDistributionSplitterAdo {
+  address: String!
+  andr: AndrQuery!
+  config: Splitter
+  getUserWeight(user: String!): UserWeightResponse!
+  type: String!
 }

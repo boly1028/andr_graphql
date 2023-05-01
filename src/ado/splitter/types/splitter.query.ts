@@ -32,6 +32,6 @@ export class Splitter {
   @Field(() => [AddressPercent], { nullable: true })
   recipients?: AddressPercent[]
 
-  @Field(() => Boolean, { nullable: true })
-  locked?: boolean
+  @Field(() => GraphQLJSON, { nullable: true })
+  lock?: Promise<JSON>
 }

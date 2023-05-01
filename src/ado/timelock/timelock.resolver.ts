@@ -22,6 +22,6 @@ export class TimelockResolver {
     @Args('recipient') recipient: string,
     @Args('options') options?: AndrSearchOptions,
   ): Promise<Escrow[]> {
-    return [] as Escrow[]
+    return this.timelockService.getLockedFundsForRecipient(timelock.address, recipient, options)
   }
 }
