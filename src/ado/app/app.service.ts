@@ -31,10 +31,38 @@ export class AppService extends AdoService {
     }
   }
 
-  public async getComponents(address: string, chainId?: string): Promise<AppComponent[]> {
+  private async components(address: string, chainId?: string): Promise<AppComponent[]> {
     try {
       const components = await this.wasmService.queryContract(address, AppSchema.get_components, chainId)
       return components as AppComponent[]
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
+
+  public async getComponents(address: string, chainId?: string): Promise<AppComponent[]> {
+    try {
+      const [components, addresses] = await Promise.all([
+        this.components(address, chainId).catch(() => {
+          return []
+        }),
+        this.getAddresses(address, chainId).catch(() => {
+          return []
+        }),
+      ])
+
+      const compswithAddr = components.map((item) => {
+        const componentAddress = addresses.find((addr) => addr.name == item.name)
+        if (componentAddress) item.address = componentAddress.address
+        return item
+      })
+
+      return compswithAddr as AppComponent[]
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {
