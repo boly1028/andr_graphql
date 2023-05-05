@@ -4,7 +4,7 @@ import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../ado.service'
 import { CW721Schema } from '../cw721/types'
-import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
+import { AndrSearchOptions, DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
 import {
   AuctionSchema,
   AUCTION_QUERY_AUCTION_ID,
@@ -69,11 +69,15 @@ export class AuctionService extends AdoService {
     }
   }
 
-  public async getBids(address: string, auctionId: number): Promise<BidsResponse> {
+  public async getBids(address: string, auctionId: number, options?: AndrSearchOptions): Promise<BidsResponse> {
     try {
       const queryMsgStr = JSON.stringify(AuctionSchema.bids).replace(AUCTION_QUERY_AUCTION_ID, String(auctionId))
-
       const queryMsg = JSON.parse(queryMsgStr)
+
+      if (options?.limit) queryMsg.bids.limit = options?.limit
+      if (options?.startAfter) queryMsg.bids.start_after = Number(options?.startAfter)
+      if (options?.orderBy) queryMsg.bids.order_by = options?.orderBy
+
       const bids = await this.wasmService.queryContract(address, queryMsg)
       return bids as BidsResponse
     } catch (err: any) {
