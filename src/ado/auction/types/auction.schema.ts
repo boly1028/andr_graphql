@@ -21,8 +21,6 @@ export const AuctionSchema = {
   bids: {
     bids: {
       auction_id: AUCTION_QUERY_AUCTION_ID,
-      start_after: 0,
-      limit: 10,
     },
   },
   auction_infos_for_address: {

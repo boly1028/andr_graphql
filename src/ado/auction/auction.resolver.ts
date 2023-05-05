@@ -1,4 +1,5 @@
 import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql'
+import { AndrSearchOptions } from '../types'
 import { AdoType } from '../types/ado.enums'
 import { AuctionService } from './auction.service'
 import {
@@ -71,8 +72,12 @@ export class AuctionResolver {
   }
 
   @ResolveField(() => BidsResponse)
-  public async bids(@Parent() auction: AuctionAdo, @Args('auctionId') auctionId: number): Promise<BidsResponse> {
-    return this.auctionService.getBids(auction.address, auctionId)
+  public async bids(
+    @Parent() auction: AuctionAdo,
+    @Args('auctionId') auctionId: number,
+    @Args('options', { nullable: true }) options: AndrSearchOptions,
+  ): Promise<BidsResponse> {
+    return this.auctionService.getBids(auction.address, auctionId, options)
   }
 
   @ResolveField(() => AuctionIDsResponse)

@@ -70,8 +70,8 @@ export enum AndrModuleType {
 }
 
 export enum AndrOrderBy {
-  Asc = 'Asc',
-  Desc = 'Desc',
+  Asc = 'asc',
+  Desc = 'desc',
 }
 
 export enum AndrRecipientType {
