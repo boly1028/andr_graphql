@@ -39,6 +39,10 @@ export class Ado {
 
   @Prop()
   @Field({ nullable: true })
+  name?: string
+
+  @Prop()
+  @Field({ nullable: true })
   appContract?: string
 
   @Prop()

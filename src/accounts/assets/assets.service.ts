@@ -3,10 +3,18 @@ import { InjectModel } from '@nestjs/mongoose'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { Model } from 'mongoose'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
-import { AdoType, DEFAULT_CATCH_ERR, MONGO_QUERY_ERROR } from 'src/ado/andr-query/types'
+import { AdoType, AndrOrderBy, DEFAULT_CATCH_ERR, MONGO_QUERY_ERROR } from 'src/ado/andr-query/types'
 import { TxService } from 'src/tx/tx.service'
 import { WasmService } from 'src/wasm/wasm.service'
-import { Ado, Component, ComponentAddress, AssetResult, ComponentSchema, INVALID_QUERY_ERR } from './types'
+import {
+  Ado,
+  Component,
+  ComponentAddress,
+  AssetResult,
+  ComponentSchema,
+  INVALID_QUERY_ERR,
+  AssetFilterArgs,
+} from './types'
 
 @Injectable()
 export class AssetsService {
@@ -83,14 +91,23 @@ export class AssetsService {
     }
   }
 
-  public async getAssets(owner: string, limit: number, offset: number, adoType?: AdoType): Promise<AssetResult[]> {
+  public async getAssets(owner: string, filter: AssetFilterArgs): Promise<AssetResult[]> {
     try {
       const query: any = { owner: owner }
-      if (adoType) {
-        query.adoType = adoType
+      if (filter.adoType) {
+        query.adoType = filter.adoType
       }
+      if (filter.search?.trim()) {
+        query.name = { $regex: new RegExp(filter.search, 'i') }
+      }
+      const orderBy = filter.orderBy === AndrOrderBy.Asc ? 1 : -1
 
-      const ados = await this.adoModel?.find(query).limit(limit).skip(offset)
+      const ados = await this.adoModel
+        ?.find(query)
+        .sort({ lastUpdatedHeight: orderBy })
+        .limit(filter.limit)
+        .skip(filter.offset)
+
       if (!ados || !ados.length) return []
 
       return ados

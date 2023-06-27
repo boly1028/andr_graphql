@@ -14,7 +14,7 @@ export class AssetsResolver {
     @Args('walletAddress') walletAddress: string,
     @Args() filter: AssetFilterArgs,
   ): Promise<AssetResult[]> {
-    return this.assetsService.getAssets(walletAddress, filter.limit, filter.offset, filter.adoType)
+    return this.assetsService.getAssets(walletAddress, filter)
   }
 
   @ResolveField(() => [Component])
