@@ -1,5 +1,5 @@
 import { ArgsType, Field, Int, ObjectType } from '@nestjs/graphql'
-import { AdoType } from 'src/ado/andr-query/types'
+import { AndrOrderBy, AdoType } from 'src/ado/andr-query/types'
 
 @ObjectType()
 export class AssetResult {
@@ -23,6 +23,9 @@ export class AssetResult {
 
   @Field({ nullable: true })
   lastUpdatedHash?: string
+
+  @Field({ nullable: true })
+  name?: string
 
   @Field({ nullable: true })
   appContract?: string
@@ -83,4 +86,10 @@ export class ComponentFilterArgs extends PaginationArgs {
 export class AssetFilterArgs extends PaginationArgs {
   @Field(() => AdoType, { nullable: true })
   adoType?: AdoType
+
+  @Field({ nullable: true })
+  search?: string
+
+  @Field(() => AndrOrderBy, { nullable: true })
+  orderBy?: string = AndrOrderBy.Asc
 }

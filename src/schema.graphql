@@ -31,7 +31,7 @@ type AccountDetails {
 }
 
 type AccountsQuery {
-  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, walletAddress: String!): [AssetResult!]!
+  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, orderBy: AndrOrderBy = Asc, search: String, walletAddress: String!): [AssetResult!]!
   wallets: String!
 }
 
@@ -231,6 +231,7 @@ type AssetResult {
   instantiateHeight: Int
   lastUpdatedHash: String
   lastUpdatedHeight: Int
+  name: String
   owner: String!
 }
 
@@ -645,7 +646,7 @@ type Query {
   ADOP: ADOPQuery!
   accounts: AccountsQuery!
   app(address: String!): AppAdo! @deprecated(reason: "Moved to `ADO` query resolver, use `app` field on `ADO` to resolve this query.")
-  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, walletAddress: String!): [AssetResult!]! @deprecated(reason: "Moved to `Accounts` query resolver, use `assets` field on `Accounts` to resolve this query.")
+  assets(adoType: AdoType, limit: Int = 10, offset: Int = 0, orderBy: AndrOrderBy = Asc, search: String, walletAddress: String!): [AssetResult!]! @deprecated(reason: "Moved to `Accounts` query resolver, use `assets` field on `Accounts` to resolve this query.")
   auction(address: String!): AuctionAdo! @deprecated(reason: "Moved to `ADO` query resolver, use `auction` field on `ADO` to resolve this query.")
   chainConfigs: ChainConfigQuery!
   cw721(address: String!): CW721Ado! @deprecated(reason: "Moved to `ADO` query resolver, use `cw721` field on `ADO` to resolve this query.")
