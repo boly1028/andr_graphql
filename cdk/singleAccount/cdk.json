@@ -41,8 +41,8 @@
       "GRAPHQL_SORT_SCHEMA": "true",
       "GRAPHQL_INTROSPECTION": "true",
       "MONGODB_URI": "mongodb+srv://graphql:t7k2GW28DhRjjJSO@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?w=majority",
-      "RPC_URL": "https://rpc.uni.juno.deuslabs.fi:443",
-      "CHAIN_ID": "uni-5",
+      "RPC_URL": "https://juno-testnet-rpc.polkachu.com:443",
+      "CHAIN_ID": "uni-6",
       "CACHE_ENABLE": "false"
     },
     "TEST_INDX": {
