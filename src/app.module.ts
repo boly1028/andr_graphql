@@ -95,6 +95,9 @@ import { WasmModule } from './wasm/wasm.module'
           playground: config.get<string>('GRAPHQL_PLAYGROUND', 'false') === 'true',
           autoSchemaFile: join(process.cwd(), 'src/schema.graphql'),
           introspection: config.get<string>('GRAPHQL_INTROSPECTION', 'true') === 'true',
+          subscriptions: {
+            'graphql-ws': true,
+          },
         }
       },
     }),

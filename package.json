@@ -44,6 +44,7 @@
     "class-validator": "0.13.1",
     "compression": "^1.7.4",
     "graphql": "^15.8.0",
+    "graphql-subscriptions": "^2.0.0",
     "graphql-type-json": "^0.3.2",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",

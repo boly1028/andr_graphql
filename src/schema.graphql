@@ -60,6 +60,42 @@ type AddressPercent {
   recipient: JSON
 }
 
+type Ado {
+  address: String!
+  adoType: String!
+  appContract: String
+  chainId: String!
+  instantiateHash: String!
+  instantiateHeight: Float!
+  lastUpdatedHash: String!
+  lastUpdatedHeight: Float!
+  minter: String
+  name: String
+  owner: String!
+}
+
+input AdoAddedSubscriptionInput {
+  owner: String!
+}
+
+input AdoInput {
+  address: String!
+  adoType: String!
+  appContract: String
+  chainId: String!
+  instantiateHash: String!
+  instantiateHeight: Int!
+  lastUpdatedHash: String!
+  lastUpdatedHeight: Int!
+  minter: String
+  name: String
+  owner: String!
+}
+
+input AdoOwnerUpdatedSubscriptionInput {
+  owner: String!
+}
+
 type AdoPackage {
   name: String!
   schemas: ADOPSchema!
@@ -605,6 +641,11 @@ type Minter {
   minter: String!
 }
 
+type Mutation {
+  addAdo(input: AdoInput!): Ado!
+  updateAdoOwner(input: UpdateAdoOwnerInput!): Ado!
+}
+
 type NftApproval {
   expires: JSON
   spender: String
@@ -733,6 +774,11 @@ type StateStructure {
   total_share: Float
 }
 
+type Subscription {
+  adoAdded(filter: AdoAddedSubscriptionInput!): Ado!
+  adoOwnerUpdated(filter: AdoOwnerUpdatedSubscriptionInput!): Ado!
+}
+
 type SummaryFields {
   coin_denom: String
   high_bidder_amount: Int
@@ -805,6 +851,12 @@ type TxSearchResult {
   byOwner(maxHeight: Int, minHeight: Int, walletAddress: String!): [TxInfo!]
   byTag(maxHeight: Int, minHeight: Int, tags: JSON!): [TxInfo!]
   chainId: String!
+}
+
+input UpdateAdoOwnerInput {
+  address: String!
+  newOwner: String!
+  txHeight: Int!
 }
 
 type UserWeightResponse {

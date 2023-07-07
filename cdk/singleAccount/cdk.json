@@ -23,9 +23,9 @@
       "GRAPHQL_PLAYGROUND": "true",
       "GRAPHQL_SORT_SCHEMA": "true",
       "GRAPHQL_INTROSPECTION": "true",
-      "MONGODB_URI": "mongodb+srv://graphql:t7k2GW28DhRjjJSO@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?w=majority",
-      "RPC_URL": "https://rpc.uni.juno.deuslabs.fi:443",
-      "CHAIN_ID": "uni-5",
+      "MONGODB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority",
+      "RPC_URL": "https://juno-testnet-rpc.polkachu.com:443",
+      "CHAIN_ID": "uni-6",
       "CACHE_ENABLE": "false"
     },
     "MAIN": {
@@ -40,7 +40,7 @@
       "GRAPHQL_PLAYGROUND": "true",
       "GRAPHQL_SORT_SCHEMA": "true",
       "GRAPHQL_INTROSPECTION": "true",
-      "MONGODB_URI": "mongodb+srv://graphql:t7k2GW28DhRjjJSO@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?w=majority",
+      "MONGODB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority",
       "RPC_URL": "https://juno-testnet-rpc.polkachu.com:443",
       "CHAIN_ID": "uni-6",
       "CACHE_ENABLE": "false"
@@ -49,13 +49,15 @@
       "NODE_ENV": "dev",
       "PORT":"4000",
       "HOST":"0.0.0.0",
-      "DB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority"
+      "DB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority",
+      "GQL_URL": "https://gql.testnet.andromedaprotocol.io/graphql"
     },
     "MAIN_INDX": {
       "NODE_ENV": "production",
       "PORT":"4000",
       "HOST":"0.0.0.0",
-      "DB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority"
+      "DB_URI": "mongodb+srv://andromeda:ImEZ4m2FVON6gXYq@cluster0.j3g8rhl.mongodb.net/andromeda-indexer?retryWrites=true&w=majority",
+      "GQL_URL": "https://gql.testnet.andromedaprotocol.io/graphql"
     }
   }
 }

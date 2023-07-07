@@ -1,4 +1,5 @@
-import { Args, Query, ResolveField, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql'
+import { PubSub } from 'graphql-subscriptions'
 import { AddressListAdo } from './addresslist/types'
 import { AdoService } from './ado.service'
 import { AdoType } from './andr-query/types'
@@ -18,11 +19,20 @@ import { RateLimitingWithdrawalsAdo } from './rate-limiting-withdrawals/types'
 import { RatesAdo } from './rates/types'
 import { SplitterAdo } from './splitter/types'
 import { TimelockAdo } from './timelock/types'
-import { AdoQuery } from './types'
+import {
+  Ado,
+  AdoAddedSubscriptionInput,
+  AdoInput,
+  AdoOwnerUpdatedSubscriptionInput,
+  AdoQuery,
+  UpdateAdoOwnerInput,
+} from './types'
 import { BaseAdo } from './types/base-ado.query'
 import { VaultAdo } from './vault/types'
 import { VestingAdo } from './vesting/types'
 import { WeightedDistributionSplitterAdo } from './weighted-distribution-splitter/types'
+
+const pubSub = new PubSub()
 
 @Resolver(AdoQuery)
 export class AdoResolver {
@@ -138,5 +148,33 @@ export class AdoResolver {
     @Args('address') address: string,
   ): Promise<WeightedDistributionSplitterAdo> {
     return this.adoService.getAdo<WeightedDistributionSplitterAdo>(address, AdoType.WeightedDistributionSplitter)
+  }
+
+  @Subscription(() => Ado, {
+    filter: (payload, variables) => payload.adoAdded.owner == variables.filter.owner,
+  })
+  adoAdded(@Args('filter') filter: AdoAddedSubscriptionInput) {
+    return pubSub.asyncIterator('adoAdded')
+  }
+
+  @Mutation(() => Ado)
+  public async addAdo(@Args('input') input: AdoInput): Promise<Ado> {
+    const ado = await this.adoService.saveNewAdo(input)
+    pubSub.publish('adoAdded', { adoAdded: ado })
+    return ado
+  }
+
+  @Subscription(() => Ado, {
+    filter: (payload, variables) => payload.adoOwnerUpdated.owner == variables.filter.owner,
+  })
+  adoOwnerUpdated(@Args('filter') filter: AdoOwnerUpdatedSubscriptionInput) {
+    return pubSub.asyncIterator('adoOwnerUpdated')
+  }
+
+  @Mutation(() => Ado)
+  public async updateAdoOwner(@Args('input') input: UpdateAdoOwnerInput): Promise<Ado> {
+    const ado = await this.adoService.updateAdoOwner(input)
+    pubSub.publish('adoOwnerUpdated', { adoOwnerUpdated: ado })
+    return ado
   }
 }
