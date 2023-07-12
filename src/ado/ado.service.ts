@@ -14,6 +14,7 @@ import {
   INVALID_QUERY_ERR,
   MONGO_ADO_ALREADY_EXISTS_ERROR,
   MONGO_CREATE_ADO_ERROR,
+  MONGO_QUERY_ERROR,
   MONGO_UPDATE_ADO_ERROR,
   TypeMismatchError,
   UpdateAdoOwnerInput,
@@ -151,6 +152,20 @@ export class AdoService {
         throw err
       }
       throw new ApolloError(MONGO_UPDATE_ADO_ERROR)
+    }
+  }
+
+  public async getAdoByAddress(address: string): Promise<Ado> {
+    try {
+      const ado = await this.adoModel?.findOne({ address: address })
+      if (!ado) throw new UserInputError(MONGO_QUERY_ERROR)
+      return ado
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+      throw new ApolloError(MONGO_QUERY_ERROR, address)
     }
   }
 }
