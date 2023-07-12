@@ -159,9 +159,8 @@ export class AdoResolver {
 
   @Mutation(() => Ado)
   public async addAdo(@Args('input') input: AdoInput): Promise<Ado> {
-    const ado = await this.adoService.saveNewAdo(input)
-    pubSub.publish('adoAdded', { adoAdded: ado })
-    return ado
+    pubSub.publish('adoAdded', { adoAdded: input })
+    return input
   }
 
   @Subscription(() => Ado, {
@@ -173,7 +172,7 @@ export class AdoResolver {
 
   @Mutation(() => Ado)
   public async updateAdoOwner(@Args('input') input: UpdateAdoOwnerInput): Promise<Ado> {
-    const ado = await this.adoService.updateAdoOwner(input)
+    const ado = await this.adoService.getAdoByAddress(input.address)
     pubSub.publish('adoOwnerUpdated', { adoOwnerUpdated: ado })
     return ado
   }
