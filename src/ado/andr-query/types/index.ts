@@ -1,7 +1,7 @@
 export { ANDR_QUERY_OPERATOR } from './andr-query.constants'
 export { AndrQuery } from './andr.query'
 export { AdoType, AndrStrategyType, AndrOrderBy } from '../../types/ado.enums'
-export { AndrQuerySchema } from './andr-query.schema'
+export { AndrQuerySchema, AndrQuerySchemaOld } from './andr-query.schema'
 export { DEFAULT_CATCH_ERR, INVALID_ADO_ERR, INVALID_QUERY_ERR, MONGO_QUERY_ERROR } from './andr-query.constants'
 export { ANDR_QUERY, APP_QUERY, FACTORY_QUERY, CROWDFUND_QUERY } from './andr-query.constants'
 export { CW20Token_QUERY, NFT_QUERY, AUCTION_QUERY, SPLITTER_QUERY, VAULT_QUERY } from './andr-query.constants'

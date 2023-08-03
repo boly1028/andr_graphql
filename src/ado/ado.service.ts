@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { Model } from 'mongoose'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
-import { AdoType, AndrQuery, AndrQuerySchema } from 'src/ado/andr-query/types'
+import { AdoType, AndrQuery, AndrQuerySchema, AndrQuerySchemaOld } from 'src/ado/andr-query/types'
 import { WasmService } from 'src/wasm/wasm.service'
 import {
   Ado,
@@ -47,15 +47,18 @@ export class AdoService {
   }
 
   // TODO: Revisit unknown type conversion for TAdo
-  public async getAdo<TAdo>(address: string, ado_type: AdoType): Promise<TAdo> {
+  public async getAdo<TAdo>(address: string, ado_type: AdoType, version?: string): Promise<TAdo> {
     try {
-      const response = await this.wasmService.queryContract(address, AndrQuerySchema.type)
+      const queryMsg = version ? AndrQuerySchema.type : AndrQuerySchemaOld.type
+      const response = await this.wasmService.queryContract(address, queryMsg)
       if (ado_type === AdoType.Ado || (response.ado_type && response.ado_type === ado_type)) {
         const wasmContract = await this.wasmService.getContract(address)
+        const andr = wasmContract as AndrQuery
+        andr.contractVersion = version
         return {
           address: address,
           type: response.ado_type,
-          andr: wasmContract as AndrQuery,
+          andr,
         } as unknown as TAdo
       }
 

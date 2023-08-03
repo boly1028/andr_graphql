@@ -3,7 +3,7 @@ import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { WasmService } from 'src/wasm/wasm.service'
 import { DEFAULT_CATCH_ERR, INVALID_ADO_ERR, INVALID_QUERY_ERR } from './types'
-import { AndrQuery, AndrQuerySchema, ANDR_QUERY_OPERATOR } from './types'
+import { AndrQuery, AndrQuerySchema, AndrQuerySchemaOld, ANDR_QUERY_OPERATOR } from './types'
 
 @Injectable()
 export class AndrQueryService {
@@ -15,9 +15,10 @@ export class AndrQueryService {
     protected readonly wasmService: WasmService,
   ) {}
 
-  public async owner(address: string): Promise<string> {
+  public async owner(address: string, version?: string): Promise<string> {
+    const queryMsg = version ? AndrQuerySchema.owner : AndrQuerySchemaOld.owner
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.owner)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.owner
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -29,9 +30,10 @@ export class AndrQueryService {
     }
   }
 
-  public async operators(address: string): Promise<string[]> {
+  public async operators(address: string, version?: string): Promise<string[]> {
+    const queryMsg = version ? AndrQuerySchema.operators : AndrQuerySchemaOld.operators
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.operators)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.operators
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -43,8 +45,9 @@ export class AndrQueryService {
     }
   }
 
-  public async isOperator(address: string, operator: string): Promise<boolean> {
-    const queryMsgStr = JSON.stringify(AndrQuerySchema.is_operator).replace(ANDR_QUERY_OPERATOR, operator)
+  public async isOperator(address: string, operator: string, version?: string): Promise<boolean> {
+    const querySchema = version ? AndrQuerySchema : AndrQuerySchemaOld
+    const queryMsgStr = JSON.stringify(querySchema.is_operator).replace(ANDR_QUERY_OPERATOR, operator)
     const queryMsg = JSON.parse(queryMsgStr)
 
     try {
@@ -60,9 +63,10 @@ export class AndrQueryService {
     }
   }
 
-  public async type(address: string): Promise<string> {
+  public async type(address: string, version?: string): Promise<string> {
+    const queryMsg = version ? AndrQuerySchema.type : AndrQuerySchemaOld.type
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.type)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.ado_type
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -74,9 +78,13 @@ export class AndrQueryService {
     }
   }
 
-  public async blockHeightUponCreation(address: string): Promise<number> {
+  public async blockHeightUponCreation(address: string, version?: string): Promise<number> {
+    const queryMsg = version
+      ? AndrQuerySchema.block_height_upon_creation
+      : AndrQuerySchemaOld.block_height_upon_creation
+
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.block_height_upon_creation)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.block_height
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -88,9 +96,10 @@ export class AndrQueryService {
     }
   }
 
-  public async version(address: string): Promise<string> {
+  public async version(address: string, version?: string): Promise<string> {
+    const queryMsg = version ? AndrQuerySchema.version : AndrQuerySchemaOld.version
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.version)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.version
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -102,9 +111,10 @@ export class AndrQueryService {
     }
   }
 
-  public async originalPublisher(address: string): Promise<string> {
+  public async originalPublisher(address: string, version?: string): Promise<string> {
+    const queryMsg = version ? AndrQuerySchema.original_publisher : AndrQuerySchemaOld.original_publisher
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.original_publisher)
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.original_publisher
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
