@@ -44,8 +44,11 @@ export class AdoResolver {
   }
 
   @ResolveField(() => BaseAdo)
-  public async ado(@Args('address') address: string): Promise<BaseAdo> {
-    return this.adoService.getAdo<BaseAdo>(address, AdoType.Ado)
+  public async ado(
+    @Args('address') address: string,
+    @Args('version', { nullable: true }) version?: string,
+  ): Promise<BaseAdo> {
+    return this.adoService.getAdo<BaseAdo>(address, AdoType.Ado, version)
   }
 
   @ResolveField(() => AddressListAdo)

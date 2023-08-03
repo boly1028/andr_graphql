@@ -2,6 +2,32 @@ import { ANDR_QUERY_OPERATOR } from './andr-query.constants'
 
 export const AndrQuerySchema = {
   owner: {
+    owner: {},
+  },
+  operators: {
+    operators: {},
+  },
+  is_operator: {
+    is_operator: {
+      address: ANDR_QUERY_OPERATOR,
+    },
+  },
+  type: {
+    type: {},
+  },
+  block_height_upon_creation: {
+    block_height_upon_creation: {},
+  },
+  version: {
+    version: {},
+  },
+  original_publisher: {
+    original_publisher: {},
+  },
+}
+
+export const AndrQuerySchemaOld = {
+  owner: {
     andr_query: {
       owner: {},
     },
