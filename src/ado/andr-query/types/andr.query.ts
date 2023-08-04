@@ -47,6 +47,6 @@ export class AndrQuery implements IWasmContract {
   @Field(() => String)
   originalPublisher!: Promise<string>
 
-  @Field(() => String, { nullable: true })
-  contractVersion?: string
+  @Field(() => String)
+  contractVersion!: string
 }

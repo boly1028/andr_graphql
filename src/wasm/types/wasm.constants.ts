@@ -1,4 +1,5 @@
 export const LOGGER_ERROR_CONTRACT_TEXT = 'Error getting wasm contract: %s'
+export const LOGGER_ERROR_CONTRACT_VERSION_TEXT = 'Error getting wasm contract version: %s'
 export const LOGGER_ERROR_QUERY_TEXT = 'Error executing the wasm contract %s query: %s'
 export const INVALID_REQUEST_TEXT = 'invalid request'
 export const NOT_FOUND_TEXT = 'not found'

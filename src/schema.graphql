@@ -103,7 +103,7 @@ type AdoPackage {
 
 type AdoQuery {
   address_list(address: String!): AddressListAdo!
-  ado(address: String!, version: String): BaseAdo!
+  ado(address: String!): BaseAdo!
   app(address: String!): AppAdo!
   auction(address: String!): AuctionAdo!
   crowdfund(address: String!): CrowdfundAdo!
@@ -193,7 +193,7 @@ type AndrQuery implements IWasmContract {
   admin: String
   blockHeightUponCreation: Int!
   codeId: Int!
-  contractVersion: String
+  contractVersion: String!
   creator: String!
   ibcPortId: String
   isOperator(address: String!): Boolean!

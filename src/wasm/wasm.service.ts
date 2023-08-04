@@ -11,6 +11,7 @@ import {
   LOGGER_ERROR_QUERY_TEXT,
   LOGGER_ERROR_CONTRACT_TEXT,
   NOT_FOUND_ERR,
+  LOGGER_ERROR_CONTRACT_VERSION_TEXT,
 } from './types/wasm.constants'
 import { WasmContract } from './types/wasm.contract'
 
@@ -57,6 +58,21 @@ export class WasmService {
     } catch (err: any) {
       this.logger.error({ err }, LOGGER_ERROR_QUERY_TEXT, address, queryMsg)
       throw new ApolloError(INVALID_QUERY_ERR, 'WASM_QUERYMSG_ERROR', { queryMsg })
+    }
+  }
+
+  public async getContractVersion(address: string, chainId?: string): Promise<string> {
+    try {
+      const chainUrl = await this.chainConfigService.getChainUrl(address, chainId)
+      if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+      const _key = Buffer.from('version')
+      const queryClient = await CosmWasmClient.connect(chainUrl)
+      const queryResult = await queryClient.queryContractRaw(address, _key)
+      const resp = queryResult ? Buffer.from(queryResult).toString().replace(/"/g, '') : ''
+      return resp as string
+    } catch (err: any) {
+      this.logger.error({ err }, LOGGER_ERROR_CONTRACT_VERSION_TEXT, address)
+      throw new ApolloError(INVALID_QUERY_ERR, 'WASM_QUERY_VERSION_ERROR')
     }
   }
 

@@ -47,11 +47,14 @@ export class AdoService {
   }
 
   // TODO: Revisit unknown type conversion for TAdo
-  public async getAdo<TAdo>(address: string, ado_type: AdoType, version?: string): Promise<TAdo> {
+  public async getAdo<TAdo>(address: string, ado_type: AdoType): Promise<TAdo> {
     try {
-      const queryMsg = version ? AndrQuerySchema.type : AndrQuerySchemaOld.type
+      const version = await this.wasmService.getContractVersion(address)
+      const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.type : AndrQuerySchemaOld.type
       const response = await this.wasmService.queryContract(address, queryMsg)
-      if (ado_type === AdoType.Ado || (response.ado_type && response.ado_type === ado_type)) {
+      const adoType = response.ado_type === 'app-contract' ? 'app' : response.ado_type
+
+      if (ado_type === AdoType.Ado || (response.ado_type && adoType === ado_type)) {
         const wasmContract = await this.wasmService.getContract(address)
         const andr = wasmContract as AndrQuery
         andr.contractVersion = version
@@ -76,7 +79,9 @@ export class AdoService {
 
   public async owner(address: string): Promise<string> {
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.owner)
+      const version = await this.wasmService.getContractVersion(address)
+      const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.owner : AndrQuerySchemaOld.owner
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.owner
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -90,7 +95,9 @@ export class AdoService {
 
   public async operators(address: string): Promise<string[]> {
     try {
-      const queryResponse = await this.wasmService.queryContract(address, AndrQuerySchema.operators)
+      const version = await this.wasmService.getContractVersion(address)
+      const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.operators : AndrQuerySchemaOld.operators
+      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.operators
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -103,10 +110,13 @@ export class AdoService {
   }
 
   public async isOperator(address: string, operator: string): Promise<boolean> {
-    const queryMsgStr = JSON.stringify(AndrQuerySchema.is_operator).replace(ANDR_QUERY_OPERATOR, operator)
-    const queryMsg = JSON.parse(queryMsgStr)
-
     try {
+      const version = await this.wasmService.getContractVersion(address)
+      const querySchema = version.split('.')[1] === '2' ? AndrQuerySchema : AndrQuerySchemaOld
+
+      const queryMsgStr = JSON.stringify(querySchema.is_operator).replace(ANDR_QUERY_OPERATOR, operator)
+      const queryMsg = JSON.parse(queryMsgStr)
+
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.isOperator ?? false
     } catch (err: any) {
