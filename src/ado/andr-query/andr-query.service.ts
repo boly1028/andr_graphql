@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { WasmService } from 'src/wasm/wasm.service'
-import { DEFAULT_CATCH_ERR, INVALID_ADO_ERR, INVALID_QUERY_ERR } from './types'
-import { AndrQuery, AndrQuerySchema, AndrQuerySchemaOld, ANDR_QUERY_OPERATOR } from './types'
+import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from './types'
+import { AndrQuerySchema, AndrQuerySchemaOld, ANDR_QUERY_OPERATOR } from './types'
 
 @Injectable()
 export class AndrQueryService {
@@ -15,8 +15,8 @@ export class AndrQueryService {
     protected readonly wasmService: WasmService,
   ) {}
 
-  public async owner(address: string, version?: string): Promise<string> {
-    const queryMsg = version ? AndrQuerySchema.owner : AndrQuerySchemaOld.owner
+  public async owner(address: string, version: string): Promise<string> {
+    const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.owner : AndrQuerySchemaOld.owner
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.owner
@@ -30,8 +30,8 @@ export class AndrQueryService {
     }
   }
 
-  public async operators(address: string, version?: string): Promise<string[]> {
-    const queryMsg = version ? AndrQuerySchema.operators : AndrQuerySchemaOld.operators
+  public async operators(address: string, version: string): Promise<string[]> {
+    const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.operators : AndrQuerySchemaOld.operators
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.operators
@@ -45,8 +45,8 @@ export class AndrQueryService {
     }
   }
 
-  public async isOperator(address: string, operator: string, version?: string): Promise<boolean> {
-    const querySchema = version ? AndrQuerySchema : AndrQuerySchemaOld
+  public async isOperator(address: string, operator: string, version: string): Promise<boolean> {
+    const querySchema = version.split('.')[1] === '2' ? AndrQuerySchema : AndrQuerySchemaOld
     const queryMsgStr = JSON.stringify(querySchema.is_operator).replace(ANDR_QUERY_OPERATOR, operator)
     const queryMsg = JSON.parse(queryMsgStr)
 
@@ -63,8 +63,8 @@ export class AndrQueryService {
     }
   }
 
-  public async type(address: string, version?: string): Promise<string> {
-    const queryMsg = version ? AndrQuerySchema.type : AndrQuerySchemaOld.type
+  public async type(address: string, version: string): Promise<string> {
+    const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.type : AndrQuerySchemaOld.type
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.ado_type
@@ -78,10 +78,11 @@ export class AndrQueryService {
     }
   }
 
-  public async blockHeightUponCreation(address: string, version?: string): Promise<number> {
-    const queryMsg = version
-      ? AndrQuerySchema.block_height_upon_creation
-      : AndrQuerySchemaOld.block_height_upon_creation
+  public async blockHeightUponCreation(address: string, version: string): Promise<number> {
+    const queryMsg =
+      version.split('.')[1] === '2'
+        ? AndrQuerySchema.block_height_upon_creation
+        : AndrQuerySchemaOld.block_height_upon_creation
 
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
@@ -96,8 +97,8 @@ export class AndrQueryService {
     }
   }
 
-  public async version(address: string, version?: string): Promise<string> {
-    const queryMsg = version ? AndrQuerySchema.version : AndrQuerySchemaOld.version
+  public async version(address: string, version: string): Promise<string> {
+    const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.version : AndrQuerySchemaOld.version
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.version
@@ -111,51 +112,12 @@ export class AndrQueryService {
     }
   }
 
-  public async originalPublisher(address: string, version?: string): Promise<string> {
-    const queryMsg = version ? AndrQuerySchema.original_publisher : AndrQuerySchemaOld.original_publisher
+  public async originalPublisher(address: string, version: string): Promise<string> {
+    const queryMsg =
+      version.split('.')[1] === '2' ? AndrQuerySchema.original_publisher : AndrQuerySchemaOld.original_publisher
     try {
       const queryResponse = await this.wasmService.queryContract(address, queryMsg)
       return queryResponse.original_publisher
-    } catch (err: any) {
-      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
-      if (err instanceof UserInputError || err instanceof ApolloError) {
-        throw err
-      }
-
-      throw new ApolloError(INVALID_QUERY_ERR)
-    }
-  }
-
-  public async getContract(address: string): Promise<AndrQuery> {
-    try {
-      const contractInfo = await this.wasmService.getContract(address)
-      const adoContractInfo = contractInfo as AndrQuery
-      adoContractInfo.type = await this.type(address)
-      // if (!adoType) {
-      //   contractInfo.queries_expected = await this.wasmService.getContractQueries(address)
-      //   if (!contractInfo.queries_expected || !contractInfo.queries_expected.includes(ANDR_QUERY)) {
-      //     throw new UserInputError(INVALID_ADO_ERR)
-      //   }
-
-      //   adoType = this.getAdoType(contractInfo.queries_expected)
-      // }
-
-      // adoContractInfo.adoType = adoType
-      return adoContractInfo
-    } catch (err: any) {
-      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
-      if (err instanceof UserInputError || err instanceof ApolloError) {
-        throw err
-      }
-
-      throw new ApolloError(INVALID_ADO_ERR)
-    }
-  }
-
-  public async queryContract(address: string, queryMsg: Record<string, unknown>): Promise<any> {
-    try {
-      const queryResponse = await this.wasmService.queryContract(address, queryMsg)
-      return queryResponse
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {
