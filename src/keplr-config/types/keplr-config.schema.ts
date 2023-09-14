@@ -40,19 +40,19 @@ export class Bech32Config {
 @ObjectType()
 export class Currency {
   @Prop({ required: true })
-  @Field()
+  @Field({ nullable: true })
   coinDenom!: string
 
   @Prop({ required: true })
-  @Field()
+  @Field({ nullable: true })
   coinMinimalDenom!: string
 
   @Prop({ required: true })
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   coinDecimals!: number
 
   @Prop({ required: true })
-  @Field()
+  @Field({ nullable: true })
   coinGeckoId!: string
 }
 

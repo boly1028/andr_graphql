@@ -44,7 +44,7 @@ jobs:
 
     - name: Download task definition
       run: | 
-        aws ecs describe-task-definition --task-definition AndrFargateVpclinkStackTESTandrApiServiceTaskDef6529FB5F --query taskDefinition > task-definition.json
+        aws ecs describe-task-definition --task-definition AndrGqlEcsStackTESTandrGqlServiceTaskDef0EEAB378 --query taskDefinition > task-definition.json
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -70,6 +70,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: AndrFargateVpclinkStackTEST-andrApiServiceTESTServiceF471332A-Offv8LLUJjlX
-        cluster: AndrFargateVpclinkStackTEST-andrClusterTEST610680A5-fY0UeI15c6G1
+        service: AndrGqlEcsStackTEST-andrGqlServiceTESTServiceC8560D35-kJjW7jk4kqMA
+        cluster: AndrGqlEcsStackTEST-andrGqlClusterTEST840D9F51-904kvUtwHnrR
         wait-for-service-stability: true
