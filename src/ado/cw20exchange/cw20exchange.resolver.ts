@@ -21,11 +21,11 @@ export class CW20ExchangeResolver {
     return this.cw20ExchangeService.tokenAddress(token.address)
   }
 
-  @ResolveField(() => String)
+  @ResolveField(() => [String])
   public async saleAssets(
     @Parent() token: CW20ExchangeAdo,
     @Args('options', { nullable: true }) options: AndrSearchOptions,
-  ): Promise<string> {
+  ): Promise<[string]> {
     return this.cw20ExchangeService.saleAssets(token.address, options)
   }
 }

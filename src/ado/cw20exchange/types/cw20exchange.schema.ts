@@ -1,9 +1,7 @@
 export const CW20ExchangeSchema = {
   sale: {
     sale: {
-      asset: {
-        asset_info: {},
-      },
+      asset: {},
     },
   },
   token_address: {
