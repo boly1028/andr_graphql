@@ -24,9 +24,9 @@ export class CW20ExchangeService extends AdoService {
       const queryMsg = JSON.parse(queryMsgStr)
 
       if (cw20) {
-        queryMsg.sale.asset.asset_info.cw20 = cw20
+        queryMsg.sale.asset.cw20 = cw20
       } else if (native) {
-        queryMsg.sale.asset.asset_info.native = native
+        queryMsg.sale.asset.native = native
       } else {
         throw new UserInputError(ASSET_INFO_NOT_FOUND_ERR)
       }
@@ -59,7 +59,7 @@ export class CW20ExchangeService extends AdoService {
     }
   }
 
-  public async saleAssets(contractAddress: string, options?: AndrSearchOptions): Promise<string> {
+  public async saleAssets(contractAddress: string, options?: AndrSearchOptions): Promise<[string]> {
     try {
       const queryMsgStr = JSON.stringify(CW20ExchangeSchema.sale_assets)
       const queryMsg = JSON.parse(queryMsgStr)
@@ -69,7 +69,7 @@ export class CW20ExchangeService extends AdoService {
 
       const tokenResp = await this.wasmService.queryContract(contractAddress, queryMsg)
 
-      return (tokenResp.assets ?? '') as string
+      return (tokenResp.assets ?? ['']) as [string]
     } catch (err: any) {
       this.logger.error({ err }, 'Error getting the wasm contract %s query.', contractAddress)
       if (err instanceof UserInputError || err instanceof ApolloError) {
