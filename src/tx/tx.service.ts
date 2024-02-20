@@ -51,7 +51,10 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
-      const indexedTxs = await queryClient.searchTx({ height: height })
+      const indexedTxs = await queryClient.searchTx(
+        // { height: height }
+        `tx.height=${height}`,
+      )
 
       let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
@@ -69,13 +72,14 @@ export class TxService {
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx(
-        {
-          tags: [
-            { key: 'execute._contract_address', value: contractAddress },
-            { key: 'message.module', value: 'wasm' },
-          ],
-        },
-        filterParams,
+        // {
+        //   tags: [
+        //     { key: 'execute._contract_address', value: contractAddress },
+        //     { key: 'message.module', value: 'wasm' },
+        //   ],
+        // },
+        // filterParams,
+        `execute._contract_address=${contractAddress} AND message.module=wasm AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
       )
 
       let txInfo = indexedTxs as TxInfo[]
@@ -93,7 +97,11 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
-      const indexedTxs = await queryClient.searchTx({ sentFromOrTo: sentFromOrTo }, filterParams)
+      const indexedTxs = await queryClient.searchTx(
+        // { sentFromOrTo: sentFromOrTo },
+        // filterParams
+        `${sentFromOrTo}=${sentFromOrTo} AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+      )
 
       let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
@@ -111,13 +119,14 @@ export class TxService {
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx(
-        {
-          tags: [
-            { key: 'wasm.owner', value: walletAddress },
-            { key: 'wasm.method', value: 'instantiate' },
-          ],
-        },
-        filterParams,
+        // {
+        //   tags: [
+        //     { key: 'wasm.owner', value: walletAddress },
+        //     { key: 'wasm.method', value: 'instantiate' },
+        //   ],
+        // },
+        // filterParams,
+        `wasm.owner=${walletAddress} AND wasm.method=instantiate AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
       )
 
       let txInfo = indexedTxs as TxInfo[]
@@ -135,7 +144,11 @@ export class TxService {
 
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
-      const indexedTxs = await queryClient.searchTx(tags, filterParams)
+      let query = ''
+      query = tags.tags.map(({ key, value }) => `${key}='${value}'`).join(' AND ')
+      const indexedTxs = await queryClient.searchTx(
+        `${query} AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+      )
 
       let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))

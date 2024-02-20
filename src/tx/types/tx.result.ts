@@ -36,6 +36,9 @@ export class TxInfo {
   @Field(() => Int)
   height!: number
 
+  @Field(() => Int)
+  txIndex?: number
+
   @Field()
   hash!: string
 
@@ -55,10 +58,21 @@ export class TxInfo {
   tx?: Uint8Array
 
   @Field(() => Int, { nullable: true })
-  gasUsed?: number
+  gasUsed?: bigint
 
   @Field(() => Int, { nullable: true })
-  gasWanted?: number
+  gasWanted?: bigint
+
+  @Field(() => [TxMsgResponses], { nullable: true })
+  msgResponses?: TxMsgResponses[]
+}
+
+@ObjectType()
+export class TxMsgResponses {
+  @Field()
+  typeUrl!: string
+  @Field(() => GraphQLJSON, { nullable: true })
+  value!: Uint8Array
 }
 
 @ObjectType()

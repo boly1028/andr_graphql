@@ -25,7 +25,7 @@
     //"esModuleInterop": true,
     //"strictBindCallApply": false,
     //"forceConsistentCasingInFileNames": false
-    //"allowJs": false,
+    // "allowJs": true,
     // "sourceRoot": "src",
     // "typeRoots": [
     //   "./node_modules/@types"

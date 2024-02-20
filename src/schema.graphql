@@ -835,13 +835,20 @@ type TxInfo {
   gasWanted: Int
   hash: String!
   height: Int!
+  msgResponses: [TxMsgResponses!]
   rawLog: String
   tx: JSON
+  txIndex: Int!
   txLog: [TxLog!]
 }
 
 type TxLog {
   events: [TxEvent!]!
+}
+
+type TxMsgResponses {
+  typeUrl: String!
+  value: JSON
 }
 
 type TxSearchResult {
