@@ -71,15 +71,11 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
+      let query: string = `execute._contract_address='${contractAddress}' AND message.module='wasm'`
+      if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(
-        // {
-        //   tags: [
-        //     { key: 'execute._contract_address', value: contractAddress },
-        //     { key: 'message.module', value: 'wasm' },
-        //   ],
-        // },
-        // filterParams,
-        `execute._contract_address=${contractAddress} AND message.module=wasm AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+        query
       )
 
       let txInfo = indexedTxs as TxInfo[]
@@ -97,10 +93,11 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
+      let query: string = `${sentFromOrTo}='${sentFromOrTo}'`
+      if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(
-        // { sentFromOrTo: sentFromOrTo },
-        // filterParams
-        `${sentFromOrTo}=${sentFromOrTo} AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+        query
       )
 
       let txInfo = indexedTxs as TxInfo[]
@@ -118,15 +115,11 @@ export class TxService {
 
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
+      let query: string = `wasm.owner='${walletAddress}' AND wasm.method='instantiate'`
+      if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(
-        // {
-        //   tags: [
-        //     { key: 'wasm.owner', value: walletAddress },
-        //     { key: 'wasm.method', value: 'instantiate' },
-        //   ],
-        // },
-        // filterParams,
-        `wasm.owner=${walletAddress} AND wasm.method=instantiate AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+        query
       )
 
       let txInfo = indexedTxs as TxInfo[]
@@ -146,8 +139,10 @@ export class TxService {
       const queryClient = await CosmWasmClient.connect(chainUrl)
       let query = ''
       query = tags.tags.map(({ key, value }) => `${key}='${value}'`).join(' AND ')
+      if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(
-        `${query} AND tx.height>=${filterParams?.minHeight} AND tx.height<=${filterParams?.maxHeight}`,
+        query
       )
 
       let txInfo = indexedTxs as TxInfo[]
