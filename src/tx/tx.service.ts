@@ -110,7 +110,7 @@ export class TxService {
     if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
     try {
-      const queryClient = await CosmWasmClient.connect("chainUrl")
+      const queryClient = await CosmWasmClient.connect(chainUrl)
       let query = `wasm.owner='${walletAddress}' AND wasm.method='instantiate'`
       if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
       if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
@@ -131,6 +131,7 @@ export class TxService {
 
     try {
       const queryClient = await CosmWasmClient.connect(chainUrl)
+
       let query = ''
       if (tags.tags.length !== 0) {
         query = tags.tags.map(({ key, value }) => `${key}='${value}'`).join(' AND ')
@@ -138,7 +139,11 @@ export class TxService {
       } else {
         if (filterParams?.maxHeight) query = query.concat(`tx.height<=${filterParams?.maxHeight}`)
       }
-      if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      if (filterParams?.maxHeight) {
+        if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
+      } else {
+        if (filterParams?.minHeight) query = query.concat(`tx.height>=${filterParams?.minHeight}`)
+      }
 
       const indexedTxs = await queryClient.searchTx(query)
 
