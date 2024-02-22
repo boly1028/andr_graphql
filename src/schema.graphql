@@ -857,6 +857,7 @@ type TxSearchResult {
   byHash(hash: String!): TxInfo
   byHeight(height: Float!): [TxInfo!]
   byOwner(maxHeight: Int, minHeight: Int, walletAddress: String!): [TxInfo!]
+  byRawString(query: String!): [TxInfo!]
   byTag(maxHeight: Int, minHeight: Int, tags: JSON!): [TxInfo!]
   chainId: String!
 }

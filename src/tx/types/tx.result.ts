@@ -121,4 +121,7 @@ export class TxSearchResult {
 
   @Field(() => [TxInfo], { nullable: true })
   byTag?: TxInfo[]
+
+  @Field(() => [TxInfo], { nullable: true })
+  byRawString?: TxInfo[]
 }

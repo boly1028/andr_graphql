@@ -15,6 +15,7 @@ import {
   LOG_ERR_TX_QRY_OWNR_TXT,
   LOG_ERR_TX_QRY_TAG_TXT,
   LOG_ERR_TX_QRY_TXT,
+  LOG_ERR_TX_QRY_RAW_TXT,
 } from './types/tx.constants'
 import { TxFilterParams, TxInfo, TxLog, TxSearchByTagArgs } from './types/tx.result'
 
@@ -152,6 +153,23 @@ export class TxService {
       return txInfo
     } catch (err: any) {
       this.logger.error({ err }, LOG_ERR_TX_QRY_TAG_TXT, tags)
+      throw new ApolloError(INTERNAL_TX_QUERY_ERR)
+    }
+  }
+
+  public async byRawString(chainId: string, query: string): Promise<TxInfo[]> {
+    const chainUrl = await this.chainConfigService.getChainUrl('', chainId)
+    if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
+
+    try {
+      const queryClient = await CosmWasmClient.connect(chainUrl)
+      const indexedTxs = await queryClient.searchTx(query)
+
+      let txInfo = indexedTxs as TxInfo[]
+      txInfo = txInfo.map((tx) => this.parseTx(tx))
+      return txInfo
+    } catch (err: any) {
+      this.logger.error({ err }, LOG_ERR_TX_QRY_RAW_TXT, query)
       throw new ApolloError(INTERNAL_TX_QUERY_ERR)
     }
   }

@@ -62,4 +62,10 @@ export class TxResolver {
     const queryInfo = await this.txService.byTag(txSearch.chainId, searchTags, filterParams)
     return queryInfo
   }
+
+  @ResolveField(() => [TxInfo])
+  public async byRawString(@Parent() txSearch: TxSearchResult, @Args('query') query: string): Promise<TxInfo[]> {
+    const queryInfo = await this.txService.byRawString(txSearch.chainId, query)
+    return queryInfo
+  }
 }
