@@ -33,7 +33,7 @@
     "@nestjs/common": "^9.0.3",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.3",
-    "@nestjs/graphql": "^10.0.18",
+    "@nestjs/graphql": "^10.2.1",
     "@nestjs/mongoose": "^9.2.0",
     "@nestjs/platform-express": "^9.0.3",
     "@nestjs/throttler": "^3.0.0",

@@ -1,4 +1,4 @@
-import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { CosmWasmClient, IndexedTx } from '@cosmjs/cosmwasm-stargate'
 //import { decodeTxRaw } from '@cosmjs/proto-signing'
 import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
@@ -15,7 +15,7 @@ import {
   LOG_ERR_TX_QRY_OWNR_TXT,
   LOG_ERR_TX_QRY_TAG_TXT,
   LOG_ERR_TX_QRY_TXT,
-  LOG_ERR_TX_QRY_RAW_TXT,
+  LOG_ERR_TX_QRY_RAWSTRING_TXT,
 } from './types/tx.constants'
 import { TxFilterParams, TxInfo, TxLog, TxSearchByTagArgs } from './types/tx.result'
 
@@ -37,7 +37,20 @@ export class TxService {
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const IndexedTx = await queryClient.getTx(hash)
 
-      let txInfo = IndexedTx as TxInfo
+      const Tx = {
+        height: IndexedTx?.height,
+        txIndex: IndexedTx?.txIndex,
+        hash: IndexedTx?.hash,
+        code: IndexedTx?.code,
+        events: IndexedTx?.events,
+        rawLog: IndexedTx?.rawLog,
+        tx: IndexedTx?.tx,
+        msgResponses: IndexedTx?.msgResponses,
+        gasUsed: Number(IndexedTx?.gasUsed),
+        gasWanted: Number(IndexedTx?.gasWanted),
+      }
+
+      let txInfo = Tx as TxInfo
       txInfo = this.parseTx(txInfo)
       return txInfo
     } catch (err: any) {
@@ -52,12 +65,12 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
-      const indexedTxs = await queryClient.searchTx(
-        // { height: height }
-        `tx.height=${height}`,
-      )
+      const indexedTxs = await queryClient.searchTx(`tx.height=${height}`)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
@@ -77,7 +90,10 @@ export class TxService {
       if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(query)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
@@ -97,7 +113,10 @@ export class TxService {
       if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(query)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
@@ -117,7 +136,10 @@ export class TxService {
       if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
       const indexedTxs = await queryClient.searchTx(query)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
@@ -148,7 +170,10 @@ export class TxService {
 
       const indexedTxs = await queryClient.searchTx(query)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
@@ -165,11 +190,14 @@ export class TxService {
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const indexedTxs = await queryClient.searchTx(query)
 
-      let txInfo = indexedTxs as TxInfo[]
+      const Txs = this.matchData(indexedTxs)
+      let txInfo = Txs as TxInfo[]
+
+      // let txInfo = indexedTxs as TxInfo[]
       txInfo = txInfo.map((tx) => this.parseTx(tx))
       return txInfo
     } catch (err: any) {
-      this.logger.error({ err }, LOG_ERR_TX_QRY_RAW_TXT, query)
+      this.logger.error({ err }, LOG_ERR_TX_QRY_RAWSTRING_TXT, query)
       throw new ApolloError(INTERNAL_TX_QUERY_ERR)
     }
   }
@@ -191,7 +219,9 @@ export class TxService {
   private parseTx(tx: TxInfo): TxInfo {
     if (tx.rawLog) {
       tx.txLog = JSON.parse(tx.rawLog) as TxLog[]
+      // console.log("rawLog: ", JSON.parse(tx.rawLog));
       tx.events = tx.txLog.flatMap((log) => log.events)
+      // console.log("events: ", tx.events);
       //[ ...rawLogJSON[0].events ]
     }
 
@@ -200,5 +230,25 @@ export class TxService {
     // }
 
     return tx
+  }
+
+  private matchData(indexedTxs: IndexedTx[]) {
+    const Txs: any[] = []
+
+    indexedTxs.map((indexedTx) => {
+      Txs.push({
+        height: indexedTx?.height,
+        txIndex: indexedTx?.txIndex,
+        hash: indexedTx?.hash,
+        code: indexedTx?.code,
+        events: indexedTx?.events,
+        rawLog: indexedTx?.rawLog,
+        tx: indexedTx?.tx,
+        msgResponses: indexedTx?.msgResponses,
+        gasUsed: Number(indexedTx?.gasUsed),
+        gasWanted: Number(indexedTx?.gasWanted),
+      })
+    })
+    return Txs
   }
 }

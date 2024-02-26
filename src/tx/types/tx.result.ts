@@ -58,10 +58,10 @@ export class TxInfo {
   tx?: Uint8Array
 
   @Field(() => Int, { nullable: true })
-  gasUsed?: bigint
+  gasUsed?: number
 
   @Field(() => Int, { nullable: true })
-  gasWanted?: bigint
+  gasWanted?: number
 
   @Field(() => [TxMsgResponses], { nullable: true })
   msgResponses?: TxMsgResponses[]
