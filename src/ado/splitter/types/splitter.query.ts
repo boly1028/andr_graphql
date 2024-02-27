@@ -16,6 +16,9 @@ export class SplitterAdo implements IBaseAdoQuery {
 
   @Field(() => Splitter, { nullable: true })
   config?: Promise<Splitter>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

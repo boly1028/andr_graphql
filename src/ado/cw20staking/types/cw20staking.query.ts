@@ -24,6 +24,9 @@ export class CW20StakingAdo implements IBaseAdoQuery {
 
   @Field(() => [StakerResponse], { nullable: true })
   stakers?: Promise<StakerResponse[]>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

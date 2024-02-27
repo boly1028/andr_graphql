@@ -39,6 +39,7 @@ type AddressListAdo {
   address: String!
   admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
   andr: AndrQuery!
+  chainId: String
   codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
@@ -106,6 +107,7 @@ type AdoQuery {
   ado(address: String!): BaseAdo!
   app(address: String!): AppAdo!
   auction(address: String!): AuctionAdo!
+  chainId(address: String!): String
   crowdfund(address: String!): CrowdfundAdo!
   cw20(address: String!): CW20Ado!
   cw20_exchange(address: String!): CW20ExchangeAdo!
@@ -226,6 +228,7 @@ type AppAdo {
   addresses: [AppComponentAddress!]
   admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
   andr: AndrQuery!
+  chainId: String
   codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   componentExists(name: String!): Boolean
   components: [AppComponent!]
@@ -280,6 +283,7 @@ type AuctionAdo {
   auctionInfosForAddress(tokenAddress: String!): AuctionInfosForAddressResponse
   auctionState(auctionId: Float!): AuctionStateResponse
   bids(auctionId: Float!, options: AndrSearchOptions): BidsResponse
+  chainId: String!
   codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
@@ -305,6 +309,7 @@ type AuctionInfosForAddressResponse {
 
 type AuctionStateResponse {
   auction_id: Int
+  chainId: String
   coin_denom: String
   end_time: JSON
   high_bidder_addr: String
@@ -353,6 +358,7 @@ type CW20Ado {
   allowance(owner: String!, spender: String!): Allowance
   andr: AndrQuery!
   balance(address: String!): Float
+  chainId: String
   downloadLogo: DownloadLogo
   marketingInfo: MarketingInfo
   minter: Minter
@@ -363,6 +369,7 @@ type CW20Ado {
 type CW20ExchangeAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   sale(cw20: String, native: String): SaleResponse
   saleAssets(options: AndrSearchOptions): [String!]!
   tokenAddress: String
@@ -372,6 +379,7 @@ type CW20ExchangeAdo {
 type CW20StakingAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   config: ConfigStructure
   staker(address: String!): StakerResponse
   stakers(options: AndrSearchOptions): [StakerResponse!]
@@ -389,6 +397,7 @@ type CW721Ado {
   andr: AndrQuery!
   approval(includeExpired: Boolean!, spender: String!, tokenId: String!): NftApproval
   approvals(includeExpired: Boolean!, tokenId: String!): [NftApproval!]
+  chainId: String
   codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   contractInfo: NftContractInfo
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
@@ -457,6 +466,7 @@ type CrowdfundAdo {
   address: String!
   andr: AndrQuery!
   availableTokens: [String!]
+  chainId: String
   config: CrowdfundConfig
   isTokenAvailable(tokenId: String!): Boolean
   state: CrowdfundState
@@ -505,6 +515,7 @@ type EscrowCondition {
 type FactoryAdo implements IBaseAdoQuery {
   address: String!
   andr: AndrQuery!
+  chainId: String
   code_id(key: String!): Int
   type: String!
 }
@@ -563,6 +574,7 @@ type KeplrConfigQuery {
 type LockdropAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   config: LockdropConfig
   state: LockdropState
   type: String!
@@ -602,6 +614,7 @@ type MarketingInfo {
 type MarketplaceAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   latestSaleState(tokenAddress: String!, tokenId: String!): SaleStateResponse
   saleIds(tokenAddress: String!, tokenId: String!): SaleIds
   saleInfosForAddress(options: AndrSearchOptions, tokenAddress: String!): [SaleInfo!]
@@ -612,6 +625,7 @@ type MarketplaceAdo {
 type MerkleAirdropAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   config: MerkleAirdropConfig
   isClaimed(address: String!, stage: Float!): Boolean
   latestStage: Int
@@ -674,6 +688,7 @@ type PercentRate {
 type PrimitiveAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   getValue(key: String!): PrimitiveResponse
   type: String!
 }
@@ -714,6 +729,7 @@ type RateLimitingWithdrawalsAdo {
   accountDetails: AccountDetails
   address: String!
   andr: AndrQuery!
+  chainId: String
   coinAllowanceDetails: CoinAllowance
   type: String!
 }
@@ -721,6 +737,7 @@ type RateLimitingWithdrawalsAdo {
 type RatesAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   payments: [RateInfo!]
   type: String!
 }
@@ -761,6 +778,7 @@ type Splitter {
 type SplitterAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   config: Splitter
   type: String!
 }
@@ -789,6 +807,7 @@ type SummaryFields {
 type TimelockAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   getLockedFunds(owner: String!, recipient: String!): Escrow
   getLockedFundsForRecipient(options: AndrSearchOptions!, recipient: String!): [Escrow!]
   type: String!
@@ -877,6 +896,7 @@ type VaultAdo {
   address: String!
   andr: AndrQuery!
   balance(address: String!): [Coin!]
+  chainId: String
   strategyAddress(strategy: String!): AndrStrategy
   type: String!
 }
@@ -886,6 +906,7 @@ type VestingAdo {
   andr: AndrQuery!
   batch(id: Float!): VestingBatchInfo
   batches: [VestingBatchInfo!]
+  chainId: String
   config: VestingConfig
   type: String!
 }
@@ -923,6 +944,7 @@ type WasmContract implements IWasmContract {
 type WeightedDistributionSplitterAdo {
   address: String!
   andr: AndrQuery!
+  chainId: String
   config: Splitter
   getUserWeight(user: String!): UserWeightResponse!
   type: String!

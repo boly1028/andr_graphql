@@ -28,6 +28,9 @@ export class MerkleAirdropAdo implements IBaseAdoQuery {
 
   @Field(() => String, { nullable: true })
   totalClaimed?: Promise<string>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

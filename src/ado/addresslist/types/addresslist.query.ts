@@ -16,6 +16,9 @@ export class AddressListAdo extends BaseAdoContract implements IBaseAdoQuery {
 
   @Field(() => AddressListResponse, { nullable: true })
   includesAddress?: Promise<AddressListResponse>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../ado.service'
 import { CW721Schema } from '../cw721/types'
-import { AndrSearchOptions, DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
+import { AndrSearchOptions, DEFAULT_CATCH_ERR, INVALID_QUERY_ERR, CHAIN_ID_NOT_FOUND_ERR } from '../types'
 import {
   AuctionSchema,
   AUCTION_QUERY_AUCTION_ID,
@@ -19,11 +20,11 @@ export class AuctionService extends AdoService {
   constructor(
     @InjectPinoLogger(AuctionService.name)
     protected readonly logger: PinoLogger,
-
     @Inject(WasmService)
     protected readonly wasmService: WasmService,
+    @Inject(ChainConfigService) protected readonly chainConfigService: ChainConfigService,
   ) {
-    super(logger, wasmService)
+    super(logger, wasmService, chainConfigService)
   }
 
   public async getLatestAuctionState(
@@ -162,6 +163,22 @@ export class AuctionService extends AdoService {
       return { min_bid: floorPrice, high_bidder_amount: highestBid, coin_denom: coinDenom } as SummaryFields
     } catch (err: any) {
       this.logger.error({ err }, 'Error getting the wasm contract %s query.', address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
+
+  public async getChainId(address: string): Promise<string> {
+    try {
+      const chainId = await this.chainConfigService.getChainId(address)
+      if (!chainId) throw new UserInputError(CHAIN_ID_NOT_FOUND_ERR)
+
+      return chainId
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {
         throw err
       }

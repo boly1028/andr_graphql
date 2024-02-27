@@ -6,6 +6,11 @@ import { AccountDetails, CoinAllowance, RateLimitingWithdrawalsAdo } from './typ
 export class RateLimitingWithdrawalsResolver {
   constructor(private readonly rateLimitingWithdrawalsService: RateLimitingWithdrawalsService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() rateLimitingWithdrawals: RateLimitingWithdrawalsAdo): Promise<string> {
+    return this.rateLimitingWithdrawalsService.getChainId(rateLimitingWithdrawals.address)
+  }
+
   @ResolveField(() => CoinAllowance)
   public async coinAllowanceDetails(
     @Parent() rateLimitingWithdrawals: RateLimitingWithdrawalsAdo,

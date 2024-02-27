@@ -20,6 +20,9 @@ export class AppAdo extends BaseAdoContract implements IBaseAdoQuery {
   @Field(() => String, { nullable: true })
   getAddress?: Promise<string>
 
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
+
   @Field(() => [AppComponentAddress], { nullable: true })
   addresses?: Promise<AppComponentAddress[]>
 

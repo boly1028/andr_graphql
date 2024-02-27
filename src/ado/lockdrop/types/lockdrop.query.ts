@@ -24,6 +24,9 @@ export class LockdropAdo implements IBaseAdoQuery {
 
   @Field(() => Float, { nullable: true })
   withdrawalPercentAllowed?: Promise<number>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

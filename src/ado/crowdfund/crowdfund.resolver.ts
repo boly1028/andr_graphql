@@ -6,6 +6,11 @@ import { CrowdfundAdo, CrowdfundConfig, CrowdfundState } from './types'
 export class CrowdfundResolver {
   constructor(private readonly crowdfundService: CrowdfundService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() crowdfund: CrowdfundAdo): Promise<string> {
+    return this.crowdfundService.getChainId(crowdfund.address)
+  }
+
   @ResolveField(() => CrowdfundState)
   public async state(@Parent() crowdfund: CrowdfundAdo): Promise<CrowdfundState> {
     return this.crowdfundService.state(crowdfund.address)

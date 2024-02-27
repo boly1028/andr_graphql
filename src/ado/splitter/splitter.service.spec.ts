@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { getLoggerToken } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { SplitterService } from './splitter.service'
 
@@ -18,6 +19,10 @@ describe('SplitterService', () => {
         },
         {
           provide: WasmService,
+          useValue: {},
+        },
+        {
+          provide: ChainConfigService,
           useValue: {},
         },
       ],

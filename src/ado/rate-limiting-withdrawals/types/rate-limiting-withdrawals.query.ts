@@ -18,6 +18,9 @@ export class RateLimitingWithdrawalsAdo implements IBaseAdoQuery {
 
   @Field(() => AccountDetails, { nullable: true })
   accountDetails?: Promise<AccountDetails>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

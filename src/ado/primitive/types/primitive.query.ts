@@ -16,6 +16,9 @@ export class PrimitiveAdo implements IBaseAdoQuery {
 
   @Field(() => PrimitiveResponse, { nullable: true })
   getValue?: Promise<PrimitiveResponse>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

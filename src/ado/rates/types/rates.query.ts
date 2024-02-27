@@ -17,6 +17,9 @@ export class RatesAdo implements IBaseAdoQuery {
 
   @Field(() => [RateInfo], { nullable: true })
   payments?: Promise<RateInfo[]>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

@@ -20,6 +20,9 @@ export class TimelockAdo implements IBaseAdoQuery {
 
   @Field(() => [Escrow], { nullable: true })
   getLockedFundsForRecipient?: Promise<Escrow[]>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

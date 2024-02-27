@@ -84,4 +84,7 @@ export class AdoQuery {
 
   @Field(() => AppAdo)
   app!: Promise<AppAdo>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }

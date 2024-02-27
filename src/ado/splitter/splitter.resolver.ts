@@ -10,4 +10,9 @@ export class SplitterResolver {
   public async config(@Parent() splitter: SplitterAdo): Promise<Splitter> {
     return this.splitterService.config(splitter.address)
   }
+
+  @ResolveField(() => String)
+  public async chainId(@Parent() splitter: SplitterAdo): Promise<string> {
+    return this.splitterService.getChainId(splitter.address)
+  }
 }

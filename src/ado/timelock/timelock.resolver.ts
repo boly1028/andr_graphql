@@ -7,6 +7,11 @@ import { TimelockService } from './timelock.service'
 export class TimelockResolver {
   constructor(private readonly timelockService: TimelockService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() timelock: TimelockAdo): Promise<string> {
+    return this.timelockService.getChainId(timelock.address)
+  }
+
   @ResolveField(() => Escrow)
   public async getLockedFunds(
     @Parent() timelock: TimelockAdo,

@@ -24,6 +24,9 @@ export class MarketplaceAdo implements IBaseAdoQuery {
 
   @Field(() => [SaleInfo], { nullable: true })
   saleInfosForAddress?: Promise<SaleInfo[]>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

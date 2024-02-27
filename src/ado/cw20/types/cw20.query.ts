@@ -40,6 +40,9 @@ export class CW20Ado implements IBaseAdoQuery {
 
   @Field(() => DownloadLogo, { nullable: true })
   downloadLogo?: Promise<DownloadLogo>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

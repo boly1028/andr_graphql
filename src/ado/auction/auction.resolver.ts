@@ -33,6 +33,11 @@ export class AuctionResolver {
     return ado
   }
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() auction: AuctionAdo): Promise<string> {
+    return this.auctionService.getChainId(auction.address)
+  }
+
   @ResolveField(() => String, {
     deprecationReason: 'Moved to `andr` query resolver, use `owner` field on `andr` to resolve this query.',
   })

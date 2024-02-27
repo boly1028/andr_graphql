@@ -13,4 +13,9 @@ export class AddresslistResolver {
   ): Promise<AddressListResponse> {
     return this.addresslistService.includesAddress(addressList.address, address)
   }
+
+  @ResolveField(() => String)
+  public async chainId(@Parent() addressList: AddressListAdo): Promise<string> {
+    return this.addresslistService.getChainId(addressList.address)
+  }
 }

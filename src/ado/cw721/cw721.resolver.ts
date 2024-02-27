@@ -35,6 +35,11 @@ export class CW721Resolver {
     return this.cw721Service.minter(cw721.address)
   }
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() cw721: CW721Ado): Promise<string> {
+    return this.cw721Service.getChainId(cw721.address)
+  }
+
   @ResolveField(() => NftOwnerInfo)
   public async ownerOf(
     @Parent() cw721: CW721Ado,

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ApolloError, UserInputError } from 'apollo-server'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
+import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../../ado/ado.service'
-import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
+import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR, CHAIN_ID_NOT_FOUND_ERR } from '../types'
 import { AppComponent, AppComponentAddress, AppConfig, AppSchema, APP_QUERY_COMPONENT_NAME } from './types'
 
 @Injectable()
@@ -13,14 +14,31 @@ export class AppService extends AdoService {
     protected readonly logger: PinoLogger,
     @Inject(WasmService)
     protected readonly wasmService: WasmService,
+    @Inject(ChainConfigService) protected readonly chainConfigService: ChainConfigService,
   ) {
-    super(logger, wasmService)
+    super(logger, wasmService, chainConfigService)
   }
 
   public async config(address: string): Promise<AppConfig> {
     try {
       const config = await this.wasmService.queryContract(address, AppSchema.config)
       return config as AppConfig
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
+
+  public async getChainId(address: string): Promise<string> {
+    try {
+      const chainId = await this.chainConfigService.getChainId(address)
+      if (!chainId) throw new UserInputError(CHAIN_ID_NOT_FOUND_ERR)
+
+      return chainId
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {
@@ -106,7 +124,9 @@ export class AppService extends AdoService {
 
   public async componentExists(address: string, name: string): Promise<boolean> {
     const queryMsgStr = JSON.stringify(AppSchema.component_exists).replace(APP_QUERY_COMPONENT_NAME, name)
+    console.log('queryMsgStr: ', queryMsgStr)
     const queryMsg = JSON.parse(queryMsgStr)
+    console.log('queryMsg: ', queryMsg)
 
     try {
       const componentResult = await this.wasmService.queryContract(address, queryMsg)

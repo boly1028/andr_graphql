@@ -17,4 +17,9 @@ export class VaultResolver {
   public async strategyAddress(@Parent() vault: VaultAdo, @Args('strategy') strategy: string): Promise<AndrStrategy> {
     return this.vaultService.strategyAddress(vault.address, strategy)
   }
+
+  @ResolveField(() => String)
+  public async chainId(@Parent() vault: VaultAdo): Promise<string> {
+    return this.vaultService.getChainId(vault.address)
+  }
 }

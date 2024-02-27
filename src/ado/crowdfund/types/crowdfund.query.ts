@@ -26,6 +26,9 @@ export class CrowdfundAdo implements IBaseAdoQuery {
 
   @Field(() => Boolean, { nullable: true })
   isTokenAvailable?: Promise<boolean>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

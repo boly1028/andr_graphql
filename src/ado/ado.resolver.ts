@@ -43,6 +43,11 @@ export class AdoResolver {
     return {} as AdoQuery
   }
 
+  @ResolveField(() => String)
+  public async chainId(@Args('address') address: string): Promise<string> {
+    return this.adoService.getChainId(address)
+  }
+
   @ResolveField(() => BaseAdo)
   public async ado(@Args('address') address: string): Promise<BaseAdo> {
     return this.adoService.getAdo<BaseAdo>(address, AdoType.Ado)

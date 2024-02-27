@@ -7,6 +7,11 @@ import { CW20ExchangeAdo, SaleResponse } from './types'
 export class CW20ExchangeResolver {
   constructor(private readonly cw20ExchangeService: CW20ExchangeService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() token: CW20ExchangeAdo): Promise<string> {
+    return this.cw20ExchangeService.getChainId(token.address)
+  }
+
   @ResolveField(() => SaleResponse)
   public async sale(
     @Parent() token: CW20ExchangeAdo,

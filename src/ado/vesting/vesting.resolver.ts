@@ -6,6 +6,11 @@ import { VestingService } from './vesting.service'
 export class VestingResolver {
   constructor(private readonly vestingService: VestingService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() vesting: VestingAdo): Promise<string> {
+    return this.vestingService.getChainId(vesting.address)
+  }
+
   @ResolveField(() => VestingConfig)
   public async config(@Parent() vesting: VestingAdo): Promise<VestingConfig> {
     return this.vestingService.config(vesting.address)

@@ -14,6 +14,9 @@ export class WeightedDistributionSplitterAdo implements IBaseAdoQuery {
   @Field(() => AndrQuery)
   andr!: AndrQuery
 
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
+
   @Field(() => Splitter, { nullable: true })
   config?: Promise<Splitter>
 }

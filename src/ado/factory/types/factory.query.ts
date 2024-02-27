@@ -15,4 +15,7 @@ export class FactoryAdo implements IBaseAdoQuery {
 
   @Field(() => Int, { nullable: true })
   code_id?: Promise<number>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }

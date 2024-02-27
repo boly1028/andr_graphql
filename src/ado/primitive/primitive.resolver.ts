@@ -6,6 +6,11 @@ import { PrimitiveAdo, PrimitiveResponse } from './types'
 export class PrimitiveResolver {
   constructor(private readonly primitiveService: PrimitiveService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() primitive: PrimitiveAdo): Promise<string> {
+    return this.primitiveService.getChainId(primitive.address)
+  }
+
   @ResolveField(() => PrimitiveResponse)
   public async getValue(@Parent() primitive: PrimitiveAdo, @Args('key') key: string): Promise<PrimitiveResponse> {
     return this.primitiveService.getValue(primitive.address, key)

@@ -22,6 +22,9 @@ export class VestingAdo implements IBaseAdoQuery {
 
   @Field(() => [VestingBatchInfo], { nullable: true })
   batches?: Promise<VestingBatchInfo[]>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

@@ -19,6 +19,9 @@ export class VaultAdo implements IBaseAdoQuery {
 
   @Field(() => AndrStrategy, { nullable: true })
   strategyAddress?: Promise<AndrStrategy>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

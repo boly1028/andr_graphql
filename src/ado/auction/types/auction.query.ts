@@ -67,6 +67,9 @@ export class AuctionStateResponse {
 
   @Field(() => Int, { nullable: true })
   summaryFields?: Promise<SummaryFields>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

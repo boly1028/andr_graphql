@@ -51,4 +51,9 @@ export class AppResolver {
   public async components(@Parent() app: AppAdo): Promise<AppComponent[]> {
     return this.appService.getComponents(app.address)
   }
+
+  @ResolveField(() => String)
+  public async chainId(@Parent() app: AppAdo): Promise<string> {
+    return this.appService.getChainId(app.address)
+  }
 }

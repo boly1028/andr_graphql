@@ -8,6 +8,11 @@ import { Allowance, DownloadLogo, MarketingInfo } from './types/cw20.query'
 export class CW20Resolver {
   constructor(private readonly cw20Service: CW20Service) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() token: CW20Ado): Promise<string> {
+    return this.cw20Service.getChainId(token.address)
+  }
+
   @ResolveField(() => Float)
   public async balance(@Parent() token: CW20Ado, @Args('address') address: string): Promise<number> {
     return this.cw20Service.balance(token.address, address)

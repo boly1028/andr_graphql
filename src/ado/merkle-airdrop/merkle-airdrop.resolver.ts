@@ -6,6 +6,11 @@ import { MerkleAirdropAdo, MerkleAirdropConfig, MerkleRootResponse } from './typ
 export class MerkleAirdropResolver {
   constructor(private readonly merkleAirdropService: MerkleAirdropService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() merkleAirdrop: MerkleAirdropAdo): Promise<string> {
+    return this.merkleAirdropService.getChainId(merkleAirdrop.address)
+  }
+
   @ResolveField(() => MerkleAirdropConfig)
   public async config(@Parent() merkleAirdrop: MerkleAirdropAdo): Promise<MerkleAirdropConfig> {
     return this.merkleAirdropService.config(merkleAirdrop.address)

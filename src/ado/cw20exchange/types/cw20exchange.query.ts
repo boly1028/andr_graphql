@@ -18,6 +18,9 @@ export class CW20ExchangeAdo implements IBaseAdoQuery {
 
   @Field(() => String, { nullable: true })
   tokenAddress?: Promise<string>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

@@ -8,6 +8,11 @@ import { ConfigStructure, CW20StakingAdo, StakerResponse, StateStructure } from 
 export class CW20StakingResolver {
   constructor(private readonly cw20StakingService: CW20StakingService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() token: CW20StakingAdo): Promise<string> {
+    return this.cw20StakingService.getChainId(token.address)
+  }
+
   @ResolveField(() => ConfigStructure)
   public async config(@Parent() token: CW20StakingAdo): Promise<ConfigStructure> {
     return this.cw20StakingService.config(token.address)

@@ -6,6 +6,11 @@ import { LockdropAdo, LockdropConfig, LockdropState, LockdropUserInfo } from './
 export class LockdropResolver {
   constructor(private readonly lockdropService: LockdropService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() lockdrop: LockdropAdo): Promise<string> {
+    return this.lockdropService.getChainId(lockdrop.address)
+  }
+
   @ResolveField(() => LockdropState)
   public async state(@Parent() lockdrop: LockdropAdo): Promise<LockdropState> {
     return this.lockdropService.state(lockdrop.address)

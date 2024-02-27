@@ -7,6 +7,11 @@ import { MarketplaceAdo, SaleIds, SaleInfo, SaleStateResponse } from './types'
 export class MarketplaceResolver {
   constructor(private readonly marketplaceService: MarketplaceService) {}
 
+  @ResolveField(() => String)
+  public async chainId(@Parent() marketplace: MarketplaceAdo): Promise<string> {
+    return this.marketplaceService.getChainId(marketplace.address)
+  }
+
   @ResolveField(() => SaleStateResponse)
   public async latestSaleState(
     @Parent() marketplace: MarketplaceAdo,

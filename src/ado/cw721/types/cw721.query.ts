@@ -57,6 +57,9 @@ export class CW721Ado extends BaseAdoContract implements IBaseAdoQuery {
 
   @Field(() => Int, { nullable: true })
   numOwners?: Promise<number>
+
+  @Field(() => String, { nullable: true })
+  chainId?: Promise<string>
 }
 
 @ObjectType()

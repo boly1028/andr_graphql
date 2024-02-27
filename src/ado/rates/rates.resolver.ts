@@ -10,4 +10,9 @@ export class RatesResolver {
   public async payments(@Parent() rates: RatesAdo): Promise<RateInfo[]> {
     return this.ratesService.payments(rates.address)
   }
+
+  @ResolveField(() => String)
+  public async chainId(@Parent() rates: RatesAdo): Promise<string> {
+    return this.ratesService.getChainId(rates.address)
+  }
 }
