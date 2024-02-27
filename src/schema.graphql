@@ -105,6 +105,7 @@ type AdoPackage {
 type AdoQuery {
   address_list(address: String!): AddressListAdo!
   ado(address: String!): BaseAdo!
+  adoSmart(address: String, query: String!): JSON!
   app(address: String!): AppAdo!
   auction(address: String!): AuctionAdo!
   chainId(address: String!): String

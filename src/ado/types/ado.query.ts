@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import GraphQLJSON from 'graphql-type-json'
 import { AddressListAdo } from '../addresslist/types'
 import { AppAdo } from '../app/types'
 import { AuctionAdo } from '../auction/types'
@@ -24,6 +25,9 @@ import { BaseAdo } from './base-ado.query'
 export class AdoQuery {
   @Field(() => BaseAdo)
   ado!: Promise<BaseAdo>
+
+  @Field(() => GraphQLJSON)
+  adoSmart!: Promise<JSON>
 
   @Field(() => PrimitiveAdo)
   primitive!: Promise<PrimitiveAdo>

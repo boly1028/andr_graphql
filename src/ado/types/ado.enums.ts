@@ -90,6 +90,10 @@ export enum AndrStrategyType {
   Anchor = 'Anchor',
 }
 
+export enum SmartQueryType {
+  AllAdoTypes = 'all_ado_types',
+}
+
 export function registerEnums() {
   registerEnumType(ProposalStatus, {
     name: 'ProposalStatus',

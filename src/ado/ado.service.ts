@@ -1,3 +1,4 @@
+import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { Inject, Injectable, Optional } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { ApolloError, UserInputError } from 'apollo-server'
@@ -5,6 +6,7 @@ import { Model } from 'mongoose'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { AdoType, AndrQuery, AndrQuerySchema, AndrQuerySchemaOld } from 'src/ado/andr-query/types'
 import { ChainConfigService } from 'src/chain-config/chain-config.service'
+import { NOT_FOUND_ERR } from 'src/wasm/types/wasm.constants'
 import { WasmService } from 'src/wasm/wasm.service'
 import {
   Ado,
@@ -21,6 +23,7 @@ import {
   UpdateAdoOwnerInput,
   CHAIN_ID_NOT_FOUND_ERR,
 } from './types'
+import { SmartQueryType } from './types/ado.enums'
 
 @Injectable()
 export class AdoService {
@@ -86,6 +89,64 @@ export class AdoService {
 
       const typeError = new TypeMismatchError(ado_type, response.ado_type)
       throw new UserInputError(typeError.error, { ...typeError })
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
+
+  public async getAdoSmart<TJSON>(address: string, query: string): Promise<TJSON> {
+    try {
+      if (address) {
+        const version = await this.wasmService.getContractVersion(address)
+        const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.type : AndrQuerySchemaOld.type
+        const response = await this.wasmService.queryContract(address, queryMsg)
+        const adoType = response?.ado_type
+
+        const queryObj = JSON.parse(query.replace(/'/g, `"`))
+        const property = Object.keys(queryObj)[0]
+
+        const chainUrl = await this.chainConfigService.getChainUrl(address, '')
+        if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
+
+        const queryClient = await CosmWasmClient.connect(chainUrl)
+        const queryResult = await queryClient.queryContractSmart(address, queryObj)
+
+        return {
+          address,
+          adoType,
+          query: property,
+          queryResult,
+        } as unknown as TJSON
+      } else {
+        const queryObj = JSON.parse(query.replace(/'/g, `"`))
+        const property = Object.keys(queryObj)[0]
+        if (property == SmartQueryType.AllAdoTypes) {
+          const ados = await this.adoModel?.find({})
+          const allTypes: string[] = []
+          ados?.map((ado) => {
+            const type = ado?.adoType
+            const foundType: string | undefined = allTypes?.find((element) => element === type)
+            if (!foundType) {
+              allTypes.push(type)
+            }
+          })
+
+          return {
+            address,
+            query: property,
+            allAdoTypes: allTypes,
+          } as unknown as TJSON
+        }
+        return {
+          address,
+          query: property,
+        } as unknown as TJSON
+      }
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {
