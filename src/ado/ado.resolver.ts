@@ -1,6 +1,5 @@
 import { Args, Mutation, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
-import GraphQLJSON from 'graphql-type-json'
 import { AddressListAdo } from './addresslist/types'
 import { AdoService } from './ado.service'
 import { AdoType } from './andr-query/types'
@@ -28,6 +27,7 @@ import {
   AdoQuery,
   UpdateAdoOwnerInput,
 } from './types'
+import { AdoSmartResponse } from './types/ado.query'
 import { BaseAdo } from './types/base-ado.query'
 import { VaultAdo } from './vault/types'
 import { VestingAdo } from './vesting/types'
@@ -54,9 +54,9 @@ export class AdoResolver {
     return this.adoService.getAdo<BaseAdo>(address, AdoType.Ado)
   }
 
-  @ResolveField(() => GraphQLJSON)
-  public async adoSmart(@Args('address') address: string, @Args('query') query: string): Promise<JSON> {
-    return this.adoService.getAdoSmart<JSON>(address, query)
+  @ResolveField(() => AdoSmartResponse)
+  public async adoSmart(@Args('address') address: string, @Args('query') query: string): Promise<AdoSmartResponse> {
+    return this.adoService.getAdoSmart<AdoSmartResponse>(address, query)
   }
 
   @ResolveField(() => AddressListAdo)
