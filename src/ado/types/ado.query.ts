@@ -26,7 +26,7 @@ export class AdoQuery {
   @Field(() => BaseAdo)
   ado!: Promise<BaseAdo>
 
-  @Field(() => GraphQLJSON)
+  @Field(() => AdoSmartResponse)
   adoSmart!: Promise<JSON>
 
   @Field(() => PrimitiveAdo)
@@ -91,4 +91,19 @@ export class AdoQuery {
 
   @Field(() => String, { nullable: true })
   chainId?: Promise<string>
+}
+
+@ObjectType()
+export class AdoSmartResponse {
+  @Field()
+  address!: string
+
+  @Field()
+  adoType!: string
+
+  @Field()
+  query!: string
+
+  @Field(() => GraphQLJSON)
+  queryResult!: JSON
 }

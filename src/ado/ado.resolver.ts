@@ -55,10 +55,7 @@ export class AdoResolver {
   }
 
   @ResolveField(() => GraphQLJSON)
-  public async adoSmart(
-    @Args('address', { nullable: true }) address: string,
-    @Args('query') query: string,
-  ): Promise<JSON> {
+  public async adoSmart(@Args('address') address: string, @Args('query') query: string): Promise<JSON> {
     return this.adoService.getAdoSmart<JSON>(address, query)
   }
 
