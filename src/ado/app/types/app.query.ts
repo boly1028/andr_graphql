@@ -41,8 +41,8 @@ export class AppComponent {
   @Field()
   ado_type!: string
 
-  @Field()
-  instantiate_msg!: string
+  @Field({ nullable: true })
+  instantiate_msg?: string
 
   @Field({ nullable: true })
   address?: string

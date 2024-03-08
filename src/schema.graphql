@@ -255,7 +255,7 @@ type AppAdo {
 type AppComponent {
   address: String
   ado_type: String!
-  instantiate_msg: String!
+  instantiate_msg: String
   name: String!
 }
 
@@ -865,7 +865,7 @@ type TxInfo {
   msgResponses: [TxMsgResponses!]
   rawLog: String
   tx: JSON
-  txIndex: Int!
+  txIndex: Int
   txLog: [TxLog!]
 }
 

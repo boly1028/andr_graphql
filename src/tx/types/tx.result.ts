@@ -36,7 +36,7 @@ export class TxInfo {
   @Field(() => Int)
   height!: number
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   txIndex?: number
 
   @Field()

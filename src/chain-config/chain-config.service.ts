@@ -53,7 +53,8 @@ export class ChainConfigService {
       if (chainId) {
         chainConfig = await this.chainConfigModel?.findOne({ chainId: chainId })
       } else {
-        const chainConfigs = await this.chainConfigModel?.find()
+        const chainConfigs = await this.chainConfigModel?.find({})
+        // console.log("chainConfigs: ", chainConfigs, this.chainConfigModel)
         if (!chainConfigs || !chainConfigs.length) throw new UserInputError(CHAIN_CONFIGS_NOT_FOUND_ERR)
 
         chainConfig = chainConfigs.find((c) => address.startsWith(c.addressPrefix))
