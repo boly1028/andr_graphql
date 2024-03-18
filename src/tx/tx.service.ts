@@ -85,10 +85,14 @@ export class TxService {
       if (!chainUrl) throw new UserInputError(INVALID_CHAIN_ERR)
 
       const queryClient = await CosmWasmClient.connect(chainUrl)
-      let query = `execute._contract_address='${contractAddress}' AND message.module='wasm'`
+      let query = `wasm._contract_address='${contractAddress}'`
       if (filterParams?.minHeight) query = query.concat(' AND ', `tx.height>=${filterParams?.minHeight}`)
       if (filterParams?.maxHeight) query = query.concat(' AND ', `tx.height<=${filterParams?.maxHeight}`)
+
+      console.log('query: ', query)
       const indexedTxs = await queryClient.searchTx(query)
+      console.log('indexedTxs: ', indexedTxs)
+      console.log('Length: ', indexedTxs.length)
 
       const Txs = this.matchData(indexedTxs)
       let txInfo = Txs as TxInfo[]

@@ -4,7 +4,7 @@ import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../ado.service'
-import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR, CHAIN_ID_NOT_FOUND_ERR } from '../types'
+import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
 import { CrowdfundConfig, CrowdfundSchema, CrowdfundState, CROWDFUND_QUERY_TOKEN_ID } from './types'
 
 @Injectable()
@@ -24,22 +24,6 @@ export class CrowdfundService extends AdoService {
     try {
       const crowdfundState = await this.wasmService.queryContract(address, CrowdfundSchema.state)
       return crowdfundState
-    } catch (err: any) {
-      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
-      if (err instanceof UserInputError || err instanceof ApolloError) {
-        throw err
-      }
-
-      throw new ApolloError(INVALID_QUERY_ERR)
-    }
-  }
-
-  public async getChainId(address: string): Promise<string> {
-    try {
-      const chainId = await this.chainConfigService.getChainId(address)
-      if (!chainId) throw new UserInputError(CHAIN_ID_NOT_FOUND_ERR)
-
-      return chainId
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
       if (err instanceof UserInputError || err instanceof ApolloError) {

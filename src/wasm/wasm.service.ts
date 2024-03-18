@@ -51,6 +51,8 @@ export class WasmService {
       const chainUrl = await this.chainConfigService.getChainUrl(address, chainId)
       if (!chainUrl) throw new UserInputError(NOT_FOUND_ERR)
 
+      console.log('chainURL: ', chainUrl, 'address: ', address)
+
       const queryClient = await CosmWasmClient.connect(chainUrl)
       const queryResult = await queryClient.queryContractSmart(address, queryMsg)
 

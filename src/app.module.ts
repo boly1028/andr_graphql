@@ -21,6 +21,7 @@ import { CW20ExchangeModule } from './ado/cw20exchange/cw20exchange.module'
 import { CW20StakingModule } from './ado/cw20staking/cw20staking.module'
 import { CW721Module } from './ado/cw721/cw721.module'
 import { FactoryModule } from './ado/factory/factory.module'
+import { KernelModule } from './ado/kernel/kernel.module'
 import { LockdropModule } from './ado/lockdrop/lockdrop.module'
 import { MarketplaceModule } from './ado/marketplace/marketplace.module'
 import { MerkleAirdropModule } from './ado/merkle-airdrop/merkle-airdrop.module'
@@ -39,6 +40,7 @@ import { validate } from './env.validation'
 import { KeplrConfigModule } from './keplr-config/keplr-config.module'
 import { TxModule } from './tx/tx.module'
 import { WasmModule } from './wasm/wasm.module'
+
 @Module({
   imports: [
     ConfigModule.forRoot({ cache: true, validate }),
@@ -127,6 +129,7 @@ import { WasmModule } from './wasm/wasm.module'
     FactoryModule,
     CW721Module,
     KeplrConfigModule,
+    KernelModule,
     PrimitiveModule,
     RateLimitingWithdrawalsAdo,
     RatesModule,

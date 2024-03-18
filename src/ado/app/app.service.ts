@@ -4,7 +4,7 @@ import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../../ado/ado.service'
-import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR, CHAIN_ID_NOT_FOUND_ERR } from '../types'
+import { DEFAULT_CATCH_ERR, INVALID_QUERY_ERR } from '../types'
 import { AppComponent, AppComponentAddress, AppConfig, AppSchema, APP_QUERY_COMPONENT_NAME } from './types'
 
 @Injectable()
@@ -33,25 +33,10 @@ export class AppService extends AdoService {
     }
   }
 
-  public async getChainId(address: string): Promise<string> {
-    try {
-      const chainId = await this.chainConfigService.getChainId(address)
-      if (!chainId) throw new UserInputError(CHAIN_ID_NOT_FOUND_ERR)
-
-      return chainId
-    } catch (err: any) {
-      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
-      if (err instanceof UserInputError || err instanceof ApolloError) {
-        throw err
-      }
-
-      throw new ApolloError(INVALID_QUERY_ERR)
-    }
-  }
-
   private async components(address: string, chainId?: string): Promise<AppComponent[]> {
     try {
       const components = await this.wasmService.queryContract(address, AppSchema.get_components, chainId)
+      console.log('Components: ', components)
       return components as AppComponent[]
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
@@ -76,7 +61,12 @@ export class AppService extends AdoService {
 
       const compswithAddr = components.map((item) => {
         const componentAddress = addresses.find((addr) => addr.name == item.name)
-        if (componentAddress) item.address = componentAddress.address
+        if (componentAddress) {
+          item.address = componentAddress.address
+          if (item.instantiate_msg == null) {
+            item.instantiate_msg = item?.component_type?.new
+          }
+        }
         return item
       })
 
@@ -94,6 +84,7 @@ export class AppService extends AdoService {
   public async getAddresses(address: string, chainId?: string): Promise<AppComponentAddress[]> {
     try {
       const addresses = await this.wasmService.queryContract(address, AppSchema.get_addresses_with_names, chainId)
+      console.log('addresses: ', addresses)
       return addresses as AppComponentAddress[]
     } catch (err: any) {
       this.logger.error({ err }, DEFAULT_CATCH_ERR, address)

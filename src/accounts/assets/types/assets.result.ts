@@ -1,5 +1,6 @@
 import { ArgsType, Field, Int, ObjectType } from '@nestjs/graphql'
 import { AndrOrderBy, AdoType } from 'src/ado/andr-query/types'
+import { ComponentType } from 'src/ado/app/types'
 
 @ObjectType()
 export class AssetResult {
@@ -53,6 +54,9 @@ export class Component {
 
   @Field({ nullable: true })
   address?: string
+
+  @Field(() => ComponentType, { nullable: true })
+  component_type?: Promise<ComponentType>
 
   // @Field(() => [NftInfo], { nullable: true })
   // tokens?: Promise<NftInfo[]>

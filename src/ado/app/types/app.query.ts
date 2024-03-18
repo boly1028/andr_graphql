@@ -34,6 +34,18 @@ export class AppAdo extends BaseAdoContract implements IBaseAdoQuery {
 }
 
 @ObjectType()
+export class ComponentType {
+  @Field({ nullable: true })
+  new?: string
+
+  @Field({ nullable: true })
+  symlink?: string
+
+  @Field({ nullable: true })
+  cross_chain?: string
+}
+
+@ObjectType()
 export class AppComponent {
   @Field()
   name!: string
@@ -47,6 +59,8 @@ export class AppComponent {
   @Field({ nullable: true })
   address?: string
 
+  @Field(() => ComponentType, { nullable: true })
+  component_type?: ComponentType
   // @Field(() => [NftInfo], { nullable: true })
   // tokens?: Promise<NftInfo[]>
 }

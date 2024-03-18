@@ -11,6 +11,7 @@ import { CW20ExchangeAdo } from './cw20exchange/types'
 import { CW20StakingAdo } from './cw20staking/types'
 import { CW721Ado } from './cw721/types'
 import { FactoryAdo } from './factory/types'
+import { KernelAdo } from './kernel/types'
 import { LockdropAdo } from './lockdrop/types'
 import { MarketplaceAdo } from './marketplace/types'
 import { MerkleAirdropAdo } from './merkle-airdrop/types'
@@ -117,6 +118,11 @@ export class AdoResolver {
   @ResolveField(() => MerkleAirdropAdo)
   public async merkle_airdrop(@Args('address') address: string): Promise<MerkleAirdropAdo> {
     return this.adoService.getAdo<MerkleAirdropAdo>(address, AdoType.MerkleAirdrop)
+  }
+
+  @ResolveField(() => KernelAdo)
+  public async kernel(@Args('address') address: string): Promise<KernelAdo> {
+    return this.adoService.getKernel<KernelAdo>(address, AdoType.Kernel)
   }
 
   @ResolveField(() => PrimitiveAdo)

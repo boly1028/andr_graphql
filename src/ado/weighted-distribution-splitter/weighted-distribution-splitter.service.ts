@@ -5,7 +5,7 @@ import { ChainConfigService } from 'src/chain-config/chain-config.service'
 import { WasmService } from 'src/wasm/wasm.service'
 import { AdoService } from '../ado.service'
 import { Splitter } from '../splitter/types'
-import { INVALID_QUERY_ERR, CHAIN_ID_NOT_FOUND_ERR, DEFAULT_CATCH_ERR } from '../types'
+import { INVALID_QUERY_ERR } from '../types'
 import { UserWeightResponse, USER_ADDRESS, WeightedDistributionSplitterAdo } from './types'
 import { WeightedDistributionSplitterSchema } from './types'
 
@@ -19,22 +19,6 @@ export class WeightedDistributionSplitterService extends AdoService {
     @Inject(ChainConfigService) protected readonly chainConfigService: ChainConfigService,
   ) {
     super(logger, wasmService, chainConfigService)
-  }
-
-  public async getChainId(address: string): Promise<string> {
-    try {
-      const chainId = await this.chainConfigService.getChainId(address)
-      if (!chainId) throw new UserInputError(CHAIN_ID_NOT_FOUND_ERR)
-
-      return chainId
-    } catch (err: any) {
-      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
-      if (err instanceof UserInputError || err instanceof ApolloError) {
-        throw err
-      }
-
-      throw new ApolloError(INVALID_QUERY_ERR)
-    }
   }
 
   public async config(contractAddress: string): Promise<Splitter> {

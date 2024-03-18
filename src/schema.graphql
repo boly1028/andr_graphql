@@ -115,6 +115,7 @@ type AdoQuery {
   cw20_staking(address: String!): CW20StakingAdo!
   cw721(address: String!): CW721Ado!
   factory(address: String!): FactoryAdo!
+  kernel(address: String!): KernelAdo!
   lockdrop(address: String!): LockdropAdo!
   marketplace(address: String!): MarketplaceAdo!
   merkle_airdrop(address: String!): MerkleAirdropAdo!
@@ -139,6 +140,7 @@ type AdoSmartResponse {
 enum AdoType {
   AddressList
   Ado
+  Adodb
   App
   Auction
   CW20
@@ -148,8 +150,10 @@ enum AdoType {
   CW721Bids
   CW721Timelock
   Crowdfund
+  Economics
   Factory
   Gumball
+  Kernel
   Lockdrop
   Marketplace
   MerkleAirdrop
@@ -163,6 +167,7 @@ enum AdoType {
   Unknown
   Vault
   Vesting
+  Vfs
   WeightedDistributionSplitter
   WeightedSplitter
   WrappedCW721
@@ -231,7 +236,7 @@ enum AndrStrategyType {
   Anchor
 }
 
-type AppAdo {
+type AppAdo implements IBaseAdoQuery {
   address: String!
   addresses: [AppComponentAddress!]
   admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
@@ -255,6 +260,7 @@ type AppAdo {
 type AppComponent {
   address: String
   ado_type: String!
+  component_type: ComponentType
   instantiate_msg: String
   name: String!
 }
@@ -447,6 +453,13 @@ type ChainConfigQuery {
   config(identifier: String!): ChainConfig!
 }
 
+type ChannelInfoResponse {
+  direct: String
+  ics20: String
+  kernel_address: String
+  supported_modules: [String!]
+}
+
 type Coin {
   amount: String!
   denom: String!
@@ -461,8 +474,15 @@ type CoinAllowance {
 type Component {
   address: String
   ado_type: String!
+  component_type: ComponentType
   instantiate_msg: String!
   name: String!
+}
+
+type ComponentType {
+  cross_chain: String
+  new: String
+  symlink: String
 }
 
 type ConfigStructure {
@@ -536,7 +556,7 @@ type GasPriceStep {
 
 interface IBaseAdoQuery {
   address: String!
-  andr: AndrQuery!
+  andr: AndrQuery
   type: String!
 }
 
@@ -577,6 +597,26 @@ type KeplrConfig {
 type KeplrConfigQuery {
   allConfigs: [KeplrConfig!]!
   config(identifier: String!): KeplrConfig!
+}
+
+type KernelAdo {
+  address: String!
+  admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
+  andr: AndrQuery!
+  chainId: String
+  channelInfo(chain: String!): ChannelInfoResponse
+  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
+  ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
+  isOperator(address: String!): Boolean @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
+  keyAddress(key: String!): String
+  label: String @deprecated(reason: "Moved to `andr` query resolver, use `label` field on `andr` to resolve this query.")
+  operators: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
+  owner: String @deprecated(reason: "Moved to `andr` query resolver, use `owner` field on `andr` to resolve this query.")
+  queries_expected: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `queries_expected` field on `andr` to resolve this query.")
+  recoveries(addr: String!): [Coin!]
+  type: String!
+  verifyAddress(addressToVerify: String!): Boolean
 }
 
 type LockdropAdo {
@@ -716,6 +756,7 @@ type Query {
   chainConfigs: ChainConfigQuery!
   cw721(address: String!): CW721Ado! @deprecated(reason: "Moved to `ADO` query resolver, use `cw721` field on `ADO` to resolve this query.")
   keplrConfigs: KeplrConfigQuery!
+  kernel(address: String!): KernelAdo! @deprecated(reason: "Moved to `ADO` query resolver, use `kernel` field on `ADO` to resolve this query.")
   tx(chainId: String!): TxSearchResult!
   wasm(address: String!): WasmContract! @deprecated(reason: "Moved to `ADO` query resolver, use `wasm` field on `ADO` to resolve this query.")
 }

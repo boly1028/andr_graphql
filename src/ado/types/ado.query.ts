@@ -8,6 +8,7 @@ import { CW20Ado } from '../cw20/types'
 import { CW20ExchangeAdo } from '../cw20exchange/types'
 import { CW20StakingAdo } from '../cw20staking/types'
 import { CW721Ado } from '../cw721/types'
+import { KernelAdo } from '../kernel/types'
 import { LockdropAdo } from '../lockdrop/types'
 import { MarketplaceAdo } from '../marketplace/types'
 import { MerkleAirdropAdo } from '../merkle-airdrop/types'
@@ -34,6 +35,9 @@ export class AdoQuery {
 
   @Field(() => CW721Ado)
   cw721!: Promise<CW721Ado>
+
+  @Field(() => KernelAdo)
+  kernel!: Promise<KernelAdo>
 
   @Field(() => SplitterAdo)
   splitter!: Promise<SplitterAdo>

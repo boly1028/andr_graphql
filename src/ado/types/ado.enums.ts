@@ -53,6 +53,10 @@ export enum AdoType {
   Vesting = 'vesting',
   WeightedSplitter = 'weighted-splitter',
   Unknown = 'unknown',
+  Kernel = 'Kernel',
+  Vfs = 'vfs',
+  Adodb = 'adodb',
+  Economics = 'economics',
 }
 
 //ERR: TS enums vs Rust enums

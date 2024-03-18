@@ -72,13 +72,20 @@ export class AdoService {
     try {
       const version = await this.getVersion(address)
       const queryMsg = version.split('.')[1] === '2' ? AndrQuerySchema.type : AndrQuerySchemaOld.type
+      // console.log('queryMsg: ', queryMsg, 'address: ', address)
       const response = await this.wasmService.queryContract(address, queryMsg)
+      // console.log('response: ', response)
       const adoType = response.ado_type === 'app-contract' ? 'app' : response.ado_type
 
       if (ado_type === AdoType.Ado || (response.ado_type && adoType === ado_type)) {
         const wasmContract = await this.wasmService.getContract(address)
         const andr = wasmContract as AndrQuery
         andr.contractVersion = version
+        console.log('ADO: ', {
+          address: address,
+          type: ado_type,
+          andr,
+        })
         return {
           address: address,
           type: response.ado_type,
@@ -232,6 +239,33 @@ export class AdoService {
         throw err
       }
       throw new ApolloError(MONGO_QUERY_ERROR, address)
+    }
+  }
+
+  public async getKernel<TKernelADO>(address: string, ado_type: AdoType): Promise<TKernelADO> {
+    try {
+      const version = await this.getVersion(address)
+
+      const wasmContract = await this.wasmService.getContract(address)
+      const andr = wasmContract as AndrQuery
+      andr.contractVersion = version
+      console.log('KernelADO: ', {
+        address: address,
+        type: ado_type,
+        andr,
+      })
+      return {
+        address: address,
+        type: ado_type,
+        andr,
+      } as unknown as TKernelADO
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
     }
   }
 

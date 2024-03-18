@@ -9,6 +9,6 @@ export abstract class IBaseAdoQuery {
   @Field()
   type!: string
 
-  @Field(() => AndrQuery)
+  @Field(() => AndrQuery, { nullable: true })
   andr!: AndrQuery
 }
