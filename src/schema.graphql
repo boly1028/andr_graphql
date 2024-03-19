@@ -35,12 +35,19 @@ type AccountsQuery {
   wallets: String!
 }
 
+type ActionFeeResponse {
+  action: String!
+  amount: Float!
+  asset: String!
+  receiver: String
+}
+
 type AddressListAdo {
   address: String!
   admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
   andr: AndrQuery!
   chainId: String
-  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
   includesAddress(address: String!): AddressListResponse
@@ -79,6 +86,31 @@ input AdoAddedSubscriptionInput {
   owner: String!
 }
 
+type AdoDBAdo implements IBaseAdoQuery {
+  actionFee: ActionFeeResponse
+  actionFeeByCodeId: ActionFeeResponse
+  address: String!
+  admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
+  adoMetadata: AdoMetadataResponse
+  adoType(codeId: Float!): String
+  adoVerions: [String!]
+  allAdoTypes(limit: Float, startAfter: String): [String!]
+  andr: AndrQuery!
+  chainId: String
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
+  ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
+  isOperator(address: String!): Boolean @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
+  isUnpublishedCodeId(codeId: Float!): Boolean
+  kernelAddress: String
+  label: String @deprecated(reason: "Moved to `andr` query resolver, use `label` field on `andr` to resolve this query.")
+  operators: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
+  owner: String @deprecated(reason: "Moved to `andr` query resolver, use `owner` field on `andr` to resolve this query.")
+  queries_expected: [String!] @deprecated(reason: "Moved to `andr` query resolver, use `queries_expected` field on `andr` to resolve this query.")
+  type: String!
+  version: VersionResponse
+}
+
 input AdoInput {
   address: String!
   adoType: String!
@@ -93,6 +125,11 @@ input AdoInput {
   owner: String!
 }
 
+type AdoMetadataResponse {
+  latest_version: String!
+  publisher: String!
+}
+
 input AdoOwnerUpdatedSubscriptionInput {
   owner: String!
 }
@@ -105,6 +142,7 @@ type AdoPackage {
 type AdoQuery {
   address_list(address: String!): AddressListAdo!
   ado(address: String!): BaseAdo!
+  adoDB(address: String!): AdoDBAdo!
   adoSmart(address: String!, query: String!): AdoSmartResponse!
   app(address: String!): AppAdo!
   auction(address: String!): AuctionAdo!
@@ -242,7 +280,7 @@ type AppAdo implements IBaseAdoQuery {
   admin: String @deprecated(reason: "Moved to `andr` query resolver, use `admin` field on `andr` to resolve this query.")
   andr: AndrQuery!
   chainId: String
-  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   componentExists(name: String!): Boolean
   components: [AppComponent!]
   config: AppConfig
@@ -298,7 +336,7 @@ type AuctionAdo {
   auctionState(auctionId: Float!): AuctionStateResponse
   bids(auctionId: Float!, options: AndrSearchOptions): BidsResponse
   chainId: String!
-  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
   isOperator(address: String!): Boolean @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
@@ -412,7 +450,7 @@ type CW721Ado {
   approval(includeExpired: Boolean!, spender: String!, tokenId: String!): NftApproval
   approvals(includeExpired: Boolean!, tokenId: String!): [NftApproval!]
   chainId: String
-  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   contractInfo: NftContractInfo
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
@@ -605,7 +643,7 @@ type KernelAdo {
   andr: AndrQuery!
   chainId: String
   channelInfo(chain: String!): ChannelInfoResponse
-  codeId: Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
+  codeId(key: String!): Int @deprecated(reason: "Moved to `andr` query resolver, use `codeId` field on `andr` to resolve this query.")
   creator: String @deprecated(reason: "Moved to `andr` query resolver, use `creator` field on `andr` to resolve this query.")
   ibcPortId: String @deprecated(reason: "Moved to `andr` query resolver, use `ibcPortId` field on `andr` to resolve this query.")
   isOperator(address: String!): Boolean @deprecated(reason: "Moved to `andr` query resolver, use `operators` field on `andr` to resolve this query.")
@@ -948,6 +986,10 @@ type VaultAdo {
   chainId: String
   strategyAddress(strategy: String!): AndrStrategy
   type: String!
+}
+
+type VersionResponse {
+  version: String!
 }
 
 type VestingAdo {

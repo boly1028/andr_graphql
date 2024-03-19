@@ -269,6 +269,33 @@ export class AdoService {
     }
   }
 
+  public async getAdoDB<TAdoDB>(address: string, ado_type: AdoType): Promise<TAdoDB> {
+    try {
+      const version = await this.getVersion(address)
+
+      const wasmContract = await this.wasmService.getContract(address)
+      const andr = wasmContract as AndrQuery
+      andr.contractVersion = version
+      console.log('AdoDB: ', {
+        address: address,
+        type: ado_type,
+        andr,
+      })
+      return {
+        address: address,
+        type: ado_type,
+        andr,
+      } as unknown as TAdoDB
+    } catch (err: any) {
+      this.logger.error({ err }, DEFAULT_CATCH_ERR, address)
+      if (err instanceof UserInputError || err instanceof ApolloError) {
+        throw err
+      }
+
+      throw new ApolloError(INVALID_QUERY_ERR)
+    }
+  }
+
   private async getVersion(address: string): Promise<string> {
     const version = await this.wasmService.getContractVersion(address)
     return version

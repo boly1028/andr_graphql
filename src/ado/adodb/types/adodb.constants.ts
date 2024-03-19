@@ -1,0 +1,6 @@
+export const ADODB_QUERY_CODE_ID = '<code_id>'
+export const ADODB_QUERY_IS_UNPUBLISHED_CODE_ID = '<is_unpublished_code_id>'
+export const ADODB_QUERY_ADO_TYPE = '<ado_type>'
+export const ADODB_QUERY_START_AFTER = '<all_ado_types>'
+export const ADODB_QUERY_LIMIT = '<all_ado_limit>'
+export const ADODB_QUERY_ACTION = '<action>'

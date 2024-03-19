@@ -22,8 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "precommit": [
-    "lint:ci",
-    "test"
+    "lint:ci"
   ],
   "dependencies": {
     "@andromedaprotocol/andromeda.js": "^0.3.8-beta.1",

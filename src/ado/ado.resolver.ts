@@ -2,6 +2,7 @@ import { Args, Mutation, Query, ResolveField, Resolver, Subscription } from '@ne
 import { PubSub } from 'graphql-subscriptions'
 import { AddressListAdo } from './addresslist/types'
 import { AdoService } from './ado.service'
+import { AdoDBAdo } from './adodb/types'
 import { AdoType } from './andr-query/types'
 import { AppAdo } from './app/types'
 import { AuctionAdo } from './auction/types'
@@ -63,6 +64,11 @@ export class AdoResolver {
   @ResolveField(() => AddressListAdo)
   public async address_list(@Args('address') address: string): Promise<AddressListAdo> {
     return this.adoService.getAdo<AddressListAdo>(address, AdoType.AddressList)
+  }
+
+  @ResolveField(() => AdoDBAdo)
+  public async adoDB(@Args('address') address: string): Promise<AdoDBAdo> {
+    return this.adoService.getAdoDB<AdoDBAdo>(address, AdoType.Adodb)
   }
 
   @ResolveField(() => AppAdo)

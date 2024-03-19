@@ -12,6 +12,7 @@ import { AssetsModule } from './accounts/assets/assets.module'
 import { AdoPackageModule } from './ado-package/ado-package.module'
 import { AddresslistModule } from './ado/addresslist/addresslist.module'
 import { AdoModule } from './ado/ado.module'
+import { AdoDBModule } from './ado/adodb/adodb.module'
 import { AndrQueryModule } from './ado/andr-query/andr-query.module'
 import { AppAdoModule } from './ado/app/app-ado.module'
 import { AuctionModule } from './ado/auction/auction.module'
@@ -118,6 +119,7 @@ import { WasmModule } from './wasm/wasm.module'
       },
     }),
     AndrQueryModule,
+    AdoDBModule,
     AddresslistModule,
     AppAdoModule,
     AuctionModule,
